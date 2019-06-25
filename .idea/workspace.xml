@@ -4,15 +4,7 @@
     <bookmark url="file://$PROJECT_DIR$/database/factories/ProductFactory.php" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d5c69644-80ff-4339-883c-c6071c9ff4da" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/ProductController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/ProductController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Controllers/Api/ProductPhotoController.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Controllers/Api/ProductPhotoController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Http/Requests/ProductPhotoRequest.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Http/Requests/ProductPhotoRequest.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/Product.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/Product.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Models/ProductPhoto.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Models/ProductPhoto.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/Providers/RouteServiceProvider.php" beforeDir="false" afterPath="$PROJECT_DIR$/app/Providers/RouteServiceProvider.php" afterDir="false" />
-    </list>
+    <list default="true" id="d5c69644-80ff-4339-883c-c6071c9ff4da" name="Default Changelist" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -363,12 +355,12 @@
       <workItem from="1560726798908" duration="109000" />
       <workItem from="1560743665565" duration="7966000" />
       <workItem from="1560831631417" duration="12890000" />
-      <workItem from="1561441877098" duration="5338000" />
+      <workItem from="1561441877098" duration="5582000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="60482000" />
+    <option name="totallyTimeSpent" value="60726000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -381,7 +373,6 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="953" y="0" width="974" height="1047" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24726477" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
