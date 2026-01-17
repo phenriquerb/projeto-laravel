@@ -36,8 +36,13 @@ O projeto utiliza **Multi-stage Build**, separando o ambiente em dois estágios:
 
 ### 1. Clonar o projeto e configurar o ambiente
 ```bash
-git clone <url-do-repositorio>
-cd <pasta-do-projeto>
+# HTTPS
+git clone https://github.com/phenriquerb/projeto-laravel.git
+
+# Ou SSH
+git clone git@github.com:phenriquerb/projeto-laravel.git
+
+cd projeto-laravel
 cp .env.example .env
 ```
 
