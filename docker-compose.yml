@@ -1,0 +1,52 @@
+services:
+  # --- PHP-FPM (Aplicação) ---
+  php-fpm:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      target: dev # <--- Isso diz para o Docker usar o estágio 'dev'
+    container_name: php-fpm
+    # Alinhamento de permissões para evitar o erro 500 de escrita
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel-net
+    depends_on:
+      - mysql
+  # --- NGINX (Servidor Web) ---
+  nginx:
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
+    container_name: nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel-net
+    depends_on:
+      - php-fpm
+
+  # --- MYSQL (Banco de Dados) ---
+  mysql:
+    image: mysql:8.4
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: laravel
+      MYSQL_USER: laravel
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - laravel-net
+
+networks:
+  laravel-net:
+    driver: bridge
+
+volumes:
+  mysql-data:
