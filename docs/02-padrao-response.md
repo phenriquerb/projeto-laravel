@@ -2,42 +2,43 @@
 
 Este documento descreve o padrão de resposta utilizado em todas as rotas da API.
 
-## Estrutura Padrão
+## Estrutura de Resposta
 
-Todas as respostas da API seguem o seguinte formato:
-
-```json
-{
-  "success": true|false,
-  "data": {}
-}
-```
-
-### Campos
-
-- **success** (boolean): Indica se a requisição foi bem-sucedida
-  - `true`: Requisição processada com sucesso
-  - `false`: Ocorreu um erro na requisição
-
-- **data** (mixed): Contém os dados da resposta ou informações de erro
+O projeto utiliza **JsonResource** do Laravel para formatar todas as respostas da API. Cada endpoint retorna diretamente os dados formatados pelo Resource, sem wrappers adicionais.
 
 ## Respostas de Sucesso
 
-### Exemplo de Sucesso
+### Exemplo de Sucesso (Collection)
+
+```json
+[
+  {
+    "id": 1,
+    "nome": "João Silva",
+    "email": "joao.silva@example.com",
+    "ativo": true,
+    "cargo": {
+      "id": 1,
+      "nome": "Desenvolvedor"
+    }
+  }
+]
+```
+
+**Status Code:** 200 (ou outro código de sucesso apropriado)
+
+### Exemplo de Sucesso (Item único)
 
 ```json
 {
-  "success": true,
-  "data": [
-    {
-      "id": 1,
-      "nome": "João Silva",
-      "cargo": {
-        "id": 1,
-        "nome": "Desenvolvedor"
-      }
-    }
-  ]
+  "id": 1,
+  "nome": "João Silva",
+  "email": "joao.silva@example.com",
+  "ativo": true,
+  "cargo": {
+    "id": 1,
+    "nome": "Desenvolvedor"
+  }
 }
 ```
 
@@ -49,14 +50,11 @@ Todas as respostas da API seguem o seguinte formato:
 
 ```json
 {
-  "success": false,
-  "data": {
-    "message": "Erro de validação",
-    "errors": {
-      "nome": [
-        "O campo nome é obrigatório."
-      ]
-    }
+  "message": "Erro de validação",
+  "errors": {
+    "nome": [
+      "O campo nome é obrigatório."
+    ]
   }
 }
 ```
@@ -67,51 +65,70 @@ Todas as respostas da API seguem o seguinte formato:
 
 ```json
 {
-  "success": false,
-  "data": {
-    "message": "Mensagem de erro descritiva"
-  }
+  "message": "Mensagem de erro descritiva"
 }
 ```
 
 **Status Code:** 400, 500 ou outro código de erro apropriado
 
-## Classes de Response
+## Resources (JsonResource)
 
-### `ApiResponse`
+O projeto utiliza **JsonResource** do Laravel para formatar as respostas. Cada entidade possui seu próprio Resource:
 
-Classe base para padronizar as respostas:
+- `FuncionarioResource` - Formata dados de funcionários
+- `CargoResource` - Formata dados de cargos
 
-```php
-ApiResponse::success($data, $statusCode);
-ApiResponse::error($data, $statusCode);
-```
-
-### Classes Específicas
-
-Cada entidade pode ter sua própria classe de response para formatação específica:
-
-**Exemplo:** `FuncionarioResponse::formatCollection($funcionarios)`
-
-## Uso no Controller
+**Exemplo de Resource:**
 
 ```php
-public function index(ListarFuncionariosRequest $request)
+class FuncionarioResource extends JsonResource
 {
-    try {
-        $filtros = $request->getValidatedData();
-        $funcionarios = $this->funcionarioService->listar($filtros);
-        $data = FuncionarioResponse::formatCollection($funcionarios);
-
-        return ApiResponse::success($data);
-    } catch (\Exception $e) {
-        return ApiResponse::error([
-            'message' => $e->getMessage(),
-        ], 500);
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'nome' => $this->nome,
+            'email' => $this->email,
+            'ativo' => (bool) $this->ativo,
+            'cargo' => $this->whenLoaded('cargo', fn () => new CargoResource($this->cargo)),
+        ];
     }
 }
 ```
 
+## Uso no Controller
+
+### Retornando uma Collection
+
+```php
+public function index(ListarFuncionariosRequest $request)
+{
+    $filtros = $request->getValidatedData();
+    $funcionarios = $this->funcionarioService->listar($filtros);
+
+    return FuncionarioResource::collection($funcionarios);
+}
+```
+
+### Retornando um Item Único
+
+```php
+public function show(int $id)
+{
+    $funcionario = $this->funcionarioService->buscarPorId($id);
+
+    return new FuncionarioResource($funcionario);
+}
+```
+
+## Benefícios dos Resources
+
+- **Documentação Automática**: O Scramble detecta automaticamente a estrutura de retorno através do método `toArray()`
+- **Type Safety**: Garante tipos corretos nos dados retornados
+- **Flexibilidade**: Permite transformar dados antes de retornar
+- **Padrão Laravel**: Utiliza recursos nativos do framework
+- **Simplicidade**: Respostas diretas sem wrappers desnecessários
+
 ## Tratamento Automático de Exceções
 
-O sistema está configurado para capturar automaticamente exceções e retorná-las no padrão da API através do `bootstrap/app.php`.
+O sistema está configurado para capturar automaticamente exceções e retorná-las no formato padrão através do `bootstrap/app.php`.

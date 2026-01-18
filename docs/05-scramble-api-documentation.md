@@ -30,12 +30,14 @@ Por padrão, o Scramble só funciona em ambiente local. Para permitir acesso pú
 ```php
 public function boot(): void
 {
-    // Permitir acesso público ao Scramble para portfólio
-    Scramble::openApi()->servers([]);
+    // No portfólio, liberar para todos verem a documentação da API
+    Gate::define('viewApiDocs', function ($user = null) {
+        return true;
+    });
 }
 ```
 
-Esta configuração remove a restrição de ambiente local, permitindo que qualquer pessoa acesse a documentação.
+Esta configuração define uma Gate que sempre retorna `true`, permitindo que qualquer pessoa acesse a documentação através do middleware `RestrictedDocsAccess`.
 
 ## Como Funciona
 
@@ -44,8 +46,62 @@ O Scramble analisa:
 1. **Rotas**: Define os endpoints disponíveis
 2. **Controllers**: Extrai informações dos métodos
 3. **Form Requests**: Documenta validações e regras
-4. **Responses**: Gera exemplos de respostas baseados nos tipos de retorno
-5. **Models**: Documenta estruturas de dados quando usadas em responses
+4. **Resources (JsonResource)**: Gera exemplos de respostas baseados no método `toArray()` dos Resources
+5. **Models**: Documenta estruturas de dados quando usadas em Resources
+
+## Resources (JsonResource)
+
+O projeto utiliza **JsonResource** do Laravel para formatar as respostas da API. O Scramble detecta automaticamente a estrutura de retorno através do método `toArray()` de cada Resource.
+
+### CargoResource
+
+```php
+class CargoResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'nome' => $this->nome,
+        ];
+    }
+}
+```
+
+### FuncionarioResource
+
+```php
+class FuncionarioResource extends JsonResource
+{
+    public function toArray(Request $request): array
+    {
+        return [
+            'id' => $this->id,
+            'nome' => $this->nome,
+            'email' => $this->email,
+            'ativo' => (bool) $this->ativo,
+            'cargo' => $this->whenLoaded('cargo', fn () => new CargoResource($this->cargo)),
+        ];
+    }
+}
+```
+
+**Uso no Controller:**
+
+```php
+// Para collections
+return FuncionarioResource::collection($funcionarios);
+
+// Para item único
+return new FuncionarioResource($funcionario);
+```
+
+**Benefícios dos Resources:**
+- **Mapeamento Automático**: O Scramble detecta automaticamente a estrutura através do método `toArray()`
+- **Type Safety**: Garante tipos corretos nos dados retornados
+- **Documentação Automática**: O Scramble gera a documentação baseada no array retornado pelo `toArray()`
+- **Padrão Laravel**: Utiliza recursos nativos do framework
+- **Manutenibilidade**: Facilita refatorações e mudanças na estrutura de resposta
 
 ## Exemplo de Uso
 

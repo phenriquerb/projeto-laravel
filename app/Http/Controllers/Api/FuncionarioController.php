@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Application\Services\FuncionarioService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ListarFuncionariosRequest;
-use App\Http\Responses\ApiResponse;
-use App\Http\Responses\FuncionarioResponse;
+use App\Http\Resources\FuncionarioResource;
 
 class FuncionarioController extends Controller
 {
@@ -17,20 +16,13 @@ class FuncionarioController extends Controller
     /**
      * Lista funcionários com filtros opcionais
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(ListarFuncionariosRequest $request)
     {
-        try {
-            $filtros = $request->getValidatedData();
-            $funcionarios = $this->funcionarioService->listar($filtros);
-            $data = FuncionarioResponse::formatCollection($funcionarios);
+        $filtros = $request->getValidatedData();
+        $funcionarios = $this->funcionarioService->listar($filtros);
 
-            return ApiResponse::success($data);
-        } catch (\Exception $e) {
-            return ApiResponse::error([
-                'message' => $e->getMessage(),
-            ], 500);
-        }
+        return FuncionarioResource::collection($funcionarios);
     }
 }

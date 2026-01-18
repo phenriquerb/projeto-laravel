@@ -18,11 +18,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (Illuminate\Validation\ValidationException $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([
-                    'success' => false,
-                    'data' => [
-                        'message' => 'Erro de validação',
-                        'errors' => $e->errors(),
-                    ],
+                    'message' => 'Erro de validação',
+                    'errors' => $e->errors(),
                 ], 422);
             }
         });
@@ -30,10 +27,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (\Exception $e, $request) {
             if ($request->is('api/*')) {
                 return response()->json([
-                    'success' => false,
-                    'data' => [
-                        'message' => $e->getMessage() ?: 'Erro interno do servidor',
-                    ],
+                    'message' => $e->getMessage() ?: 'Erro interno do servidor',
                 ], 500);
             }
         });

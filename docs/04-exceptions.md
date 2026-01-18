@@ -4,14 +4,11 @@ Este documento descreve como as exceções são tratadas no projeto.
 
 ## Padrão de Resposta de Erro
 
-Todas as exceções retornam no formato padrão da API:
+Todas as exceções retornam no formato padrão:
 
 ```json
 {
-  "success": false,
-  "data": {
-    "message": "Mensagem de erro"
-  }
+  "message": "Mensagem de erro"
 }
 ```
 
@@ -25,11 +22,8 @@ O tratamento de exceções é configurado em `bootstrap/app.php`:
     $exceptions->render(function (ValidationException $e, $request) {
         if ($request->is('api/*')) {
             return response()->json([
-                'success' => false,
-                'data' => [
-                    'message' => 'Erro de validação',
-                    'errors' => $e->errors(),
-                ],
+                'message' => 'Erro de validação',
+                'errors' => $e->errors(),
             ], 422);
         }
     });
@@ -38,10 +32,7 @@ O tratamento de exceções é configurado em `bootstrap/app.php`:
     $exceptions->render(function (Exception $e, $request) {
         if ($request->is('api/*')) {
             return response()->json([
-                'success' => false,
-                'data' => [
-                    'message' => $e->getMessage() ?: 'Erro interno do servidor',
-                ],
+                'message' => $e->getMessage() ?: 'Erro interno do servidor',
             ], 500);
         }
     });
@@ -56,14 +47,11 @@ Quando ocorre um erro de validação (FormRequest), a resposta inclui os erros e
 
 ```json
 {
-  "success": false,
-  "data": {
-    "message": "Erro de validação",
-    "errors": {
-      "campo": [
-        "Mensagem de erro do campo"
-      ]
-    }
+  "message": "Erro de validação",
+  "errors": {
+    "campo": [
+      "Mensagem de erro do campo"
+    ]
   }
 }
 ```
@@ -76,10 +64,7 @@ Para outras exceções, apenas a mensagem é retornada:
 
 ```json
 {
-  "success": false,
-  "data": {
-    "message": "Mensagem de erro descritiva"
-  }
+  "message": "Mensagem de erro descritiva"
 }
 ```
 
@@ -123,17 +108,17 @@ class FuncionarioNaoEncontradoException extends AppException
 Os controllers podem tratar exceções específicas:
 
 ```php
-public function index(ListarFuncionariosRequest $request)
+public function show(int $id)
 {
     try {
-        // Lógica do controller
-        return ApiResponse::success($data);
+        $funcionario = $this->funcionarioService->buscarPorId($id);
+        return new FuncionarioResource($funcionario);
     } catch (FuncionarioNaoEncontradoException $e) {
-        return ApiResponse::error([
+        return response()->json([
             'message' => $e->getMessage(),
         ], 404);
     } catch (\Exception $e) {
-        return ApiResponse::error([
+        return response()->json([
             'message' => $e->getMessage(),
         ], 500);
     }
