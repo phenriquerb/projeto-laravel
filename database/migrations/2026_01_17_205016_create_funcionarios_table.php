@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('funcionarios', function (Blueprint $table) {
             $table->integer('id')->primary();
             $table->string('nome');
+            $table->string('email');
+            $table->boolean('ativo')->default(true);
             $table->integer('cargo_id');
             $table->foreign('cargo_id')->references('id')->on('cargos');
             $table->timestamps();

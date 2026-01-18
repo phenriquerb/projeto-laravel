@@ -25,6 +25,8 @@ class FuncionarioResponse
         return [
             'id' => $funcionario->id,
             'nome' => $funcionario->nome,
+            'email' => $funcionario->email,
+            'ativo' => $funcionario->ativo,
             'cargo' => $funcionario->cargo ? [
                 'id' => $funcionario->cargo->id,
                 'nome' => $funcionario->cargo->nome,

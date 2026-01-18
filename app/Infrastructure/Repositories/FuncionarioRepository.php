@@ -20,6 +20,10 @@ class FuncionarioRepository implements FuncionarioRepositoryInterface
             $query->where('nome', 'like', '%'.$filtros['nome'].'%');
         }
 
+        if (isset($filtros['ativo']) && is_bool($filtros['ativo'])) {
+            $query->where('ativo', $filtros['ativo']);
+        }
+
         return $query->get();
     }
 }
