@@ -1,0 +1,11 @@
+resources:
+  - ../base/mysql.yaml
+  - ../base/php-fpm.yaml
+  - ../base/nginx.yaml
+
+namespace: homolog
+
+secretGenerator:
+  - name: mysql-secret
+    literals:
+      - password=senha_muito_forte_aqui
