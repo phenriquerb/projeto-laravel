@@ -66,4 +66,8 @@ docker compose exec php-fpm php artisan migrate
 ## 🔍 Acessando a Aplicação
 API: http://localhost:8080
 
+**Scramble (Documentação da API):** http://localhost:8080/api/documentation
+
+> **Nota:** O Scramble está configurado para acesso público, permitindo que visitantes do portfólio possam visualizar a documentação interativa da API.
+
 Telescope (Debug): http://localhost:8080/telescope

@@ -4,7 +4,7 @@
 FROM composer:2 AS build
 WORKDIR /app
 COPY . .
-RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-scripts --ignore-platform-reqs
 
 # ---------------------------------------------------------
 # 2️⃣ Estágio de Desenvolvimento (Base)
