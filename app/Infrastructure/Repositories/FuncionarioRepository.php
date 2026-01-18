@@ -12,12 +12,12 @@ class FuncionarioRepository implements FuncionarioRepositoryInterface
     {
         $query = Funcionario::with('cargo');
 
-        if (isset($filtros['id']) && is_array($filtros['id']) && !empty($filtros['id'])) {
+        if (isset($filtros['id']) && is_array($filtros['id']) && ! empty($filtros['id'])) {
             $query->whereIn('id', $filtros['id']);
         }
 
-        if (isset($filtros['nome']) && !empty($filtros['nome'])) {
-            $query->where('nome', 'like', '%' . $filtros['nome'] . '%');
+        if (isset($filtros['nome']) && ! empty($filtros['nome'])) {
+            $query->where('nome', 'like', '%'.$filtros['nome'].'%');
         }
 
         return $query->get();

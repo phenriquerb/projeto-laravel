@@ -23,15 +23,13 @@ class ListarFuncionariosRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['nullable', new CommaSeparatedNumbers()],
+            'id' => ['nullable', new CommaSeparatedNumbers],
             'nome' => 'nullable|string|max:255',
         ];
     }
 
     /**
      * Get custom messages for validator errors.
-     *
-     * @return array
      */
     public function messages(): array
     {
@@ -43,8 +41,6 @@ class ListarFuncionariosRequest extends FormRequest
 
     /**
      * Get validated data with converted id to array
-     *
-     * @return array
      */
     public function getValidatedData(): array
     {
@@ -53,12 +49,12 @@ class ListarFuncionariosRequest extends FormRequest
         if (isset($data['id']) && is_string($data['id'])) {
             $ids = array_filter(
                 array_map('trim', explode(',', $data['id'])),
-                fn($id) => !empty($id) && is_numeric($id)
+                fn ($id) => ! empty($id) && is_numeric($id)
             );
 
-            $data['id'] = !empty($ids) ? array_map('intval', $ids) : null;
+            $data['id'] = ! empty($ids) ? array_map('intval', $ids) : null;
         }
 
-        return array_filter($data, fn($value) => $value !== null);
+        return array_filter($data, fn ($value) => $value !== null);
     }
 }

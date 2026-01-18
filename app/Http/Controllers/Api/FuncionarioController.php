@@ -12,13 +12,11 @@ class FuncionarioController extends Controller
 {
     public function __construct(
         private FuncionarioService $funcionarioService
-    ) {
-    }
+    ) {}
 
     /**
      * Lista funcionários com filtros opcionais
      *
-     * @param ListarFuncionariosRequest $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function index(ListarFuncionariosRequest $request)

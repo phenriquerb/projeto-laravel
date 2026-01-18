@@ -8,9 +8,6 @@ interface FuncionarioRepositoryInterface
 {
     /**
      * Lista funcionários com filtros opcionais
-     *
-     * @param array $filtros
-     * @return Collection
      */
     public function listar(array $filtros = []): Collection;
 }

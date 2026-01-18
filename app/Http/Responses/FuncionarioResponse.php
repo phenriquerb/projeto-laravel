@@ -9,9 +9,6 @@ class FuncionarioResponse
 {
     /**
      * Formata uma coleção de funcionários para resposta
-     *
-     * @param Collection $funcionarios
-     * @return array
      */
     public static function formatCollection(Collection $funcionarios): array
     {
@@ -22,9 +19,6 @@ class FuncionarioResponse
 
     /**
      * Formata um funcionário para resposta
-     *
-     * @param Funcionario $funcionario
-     * @return array
      */
     public static function formatItem(Funcionario $funcionario): array
     {

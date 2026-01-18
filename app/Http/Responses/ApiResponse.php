@@ -8,10 +8,6 @@ class ApiResponse
 {
     /**
      * Retorna resposta de sucesso
-     *
-     * @param mixed $data
-     * @param int $statusCode
-     * @return JsonResponse
      */
     public static function success(mixed $data, int $statusCode = 200): JsonResponse
     {
@@ -23,10 +19,6 @@ class ApiResponse
 
     /**
      * Retorna resposta de erro
-     *
-     * @param mixed $data
-     * @param int $statusCode
-     * @return JsonResponse
      */
     public static function error(mixed $data, int $statusCode = 400): JsonResponse
     {

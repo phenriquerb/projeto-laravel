@@ -9,14 +9,10 @@ class FuncionarioService
 {
     public function __construct(
         private FuncionarioRepositoryInterface $funcionarioRepository
-    ) {
-    }
+    ) {}
 
     /**
      * Lista funcionários com filtros
-     *
-     * @param array $filtros
-     * @return Collection
      */
     public function listar(array $filtros = []): Collection
     {
