@@ -77,7 +77,7 @@ jobs:
       - name: Save DigitalOcean kubeconfig
         run: doctl kubernetes cluster kubeconfig save ${{ secrets.DIGITALOCEAN_CLUSTER_NAME }}
 
-      # 7. Deploy Real (A Mágica!)
+      # 7. Deploy Real
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -k k8s/homolog --load-restrictor LoadRestrictionsNone
+          kustomize build k8s/homolog --load-restrictor LoadRestrictionsNone | kubectl apply -f -
