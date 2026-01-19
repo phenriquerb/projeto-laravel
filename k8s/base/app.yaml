@@ -12,10 +12,10 @@ spec:
       labels:
         app: laravel-app
     spec:
-    initContainers:
+      initContainers:
         - name: install-code
           image: app-placeholder
-          command: ["sh", "-c", "cp -rp /var/www/html/. /var/www/html/"]
+          command: ["sh", "-c", "cp -rp /var/www/html/. /var/www/html/"] # Copia tudo da imagem para o volume vazio, garantindo que o Nginx veja os assets
           volumeMounts:
             - name: app-code
               mountPath: /var/www/html
