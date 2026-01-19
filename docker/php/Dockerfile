@@ -33,7 +33,7 @@ RUN chmod +x /usr/local/bin/php-fpm-healthcheck
 
 COPY docker/php/php-prod.ini /usr/local/etc/php/conf.d/php-prod.ini
 
-WORKDIR /var/www
+WORKDIR /var/www/html
 
 COPY --from=build --chown=www-data:www-data /app /var/www
 
