@@ -71,3 +71,21 @@ API: http://localhost:8080
 > **Nota:** O Scramble está configurado para acesso público, permitindo que visitantes do portfólio possam visualizar a documentação interativa da API.
 
 Telescope (Debug): http://localhost:8080/telescope
+
+---
+
+## 🚦 CI/CD e Quality Gate
+
+O projeto possui um **pipeline CI/CD** configurado no GitHub Actions que executa automaticamente em cada push para as branches `main` e `develop`.
+
+### Quality Gate (Portão de Qualidade)
+
+O pipeline implementa um **Quality Gate baseado em testes automatizados** que impede deploys instáveis. Antes de qualquer build ou deploy, o pipeline executa:
+
+- ✅ **Testes Unitários**: Validação da lógica de negócio e regras customizadas
+- ✅ **Testes de Integração**: Validação dos endpoints e fluxos completos da API
+- ✅ **Lint (Pint)**: Verificação de formatação e padrões de código
+
+**Apenas builds que passam em todos os testes são aprovados para deploy**, garantindo qualidade e estabilidade do código em produção.
+
+Para mais detalhes, consulte o arquivo `.github/workflows/main.yml`.
