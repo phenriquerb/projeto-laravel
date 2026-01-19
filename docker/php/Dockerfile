@@ -35,7 +35,7 @@ COPY docker/php/php-prod.ini /usr/local/etc/php/conf.d/php-prod.ini
 
 WORKDIR /var/www/html
 
-COPY --from=build --chown=www-data:www-data /app /var/www
+COPY --from=build --chown=www-data:www-data /app /var/www/html
 
 USER www-data
 
