@@ -80,4 +80,4 @@ jobs:
       # 7. Deploy Real (A Mágica!)
       - name: Deploy to Kubernetes
         run: |
-          kubectl apply -k k8s/homolog
+          kubectl apply -k k8s/homolog --load-restrictor LoadRestrictionsNone
