@@ -4,12 +4,14 @@ metadata:
   name: app-ingress
   namespace: homolog
   annotations:
-    # Garante que o controller do Nginx assuma a requisição
-    kubernetes.io/ingress.class: nginx
-    # Aumenta os timeouts para evitar o 'Empty Reply' durante processamentos longos
-    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    # Esta annotation é o que o seu Controller (versão 7cfc98...) procura
+    kubernetes.io/ingress.class: "nginx"
+    # Força o redirecionamento para HTTPS se você tiver SSL, 
+    # mas por enquanto vamos garantir que o HTTP funcione
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
 spec:
+  # O preenchimento deste campo fará o CLASS sair de <none> para nginx
+  ingressClassName: nginx 
   rules:
   - http:
       paths:
