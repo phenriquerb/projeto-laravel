@@ -44,6 +44,24 @@ services:
     networks:
       - laravel-net
 
+  # --- PULSE (Monitoramento em tempo real) ---
+  pulse:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      target: dev
+    container_name: pulse-worker
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel-net
+    depends_on:
+      - mysql
+      - php-fpm
+    # Sobrescreve o CMD do Dockerfile para rodar o monitor do Pulse
+    command: php artisan pulse:check
+
 networks:
   laravel-net:
     driver: bridge

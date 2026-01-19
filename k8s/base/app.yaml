@@ -54,7 +54,7 @@ spec:
             - secretRef:
                 name: app-secrets
 
-        # --- CONTAINER 2: NGINX (Sidecar) ---
+        # --- CONTAINER 2: NGINX ---
         - name: nginx
           image: nginx:alpine
           ports:
@@ -66,6 +66,16 @@ spec:
               mountPath: /etc/nginx/conf.d/default.conf
               subPath: default.conf
 
+        # --- CONTAINER 3: PULSE ---
+        - name: pulse-worker
+          image: app-placeholder
+          command: ["php", "artisan", "pulse:check"]
+          volumeMounts:
+            - name: app-code
+              mountPath: /var/www/html
+          envFrom:
+            - secretRef:
+                name: app-secrets
       volumes:
         - name: app-code
           emptyDir: {}

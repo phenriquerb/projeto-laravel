@@ -23,5 +23,9 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('viewApiDocs', function ($user = null) {
             return true;
         });
+
+        Gate::define('viewPulse', function ($user = null) {
+            return true;
+        });
     }
 }
