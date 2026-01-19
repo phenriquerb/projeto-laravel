@@ -17,7 +17,8 @@ class FuncionarioRepository implements FuncionarioRepositoryInterface
         }
 
         if (isset($filtros['nome']) && ! empty($filtros['nome'])) {
-            $query->where('nome', 'like', '%'.$filtros['nome'].'%');
+            $nome = $filtros['nome'] ?? '';
+            $query->where('nome', 'like', '%'.$nome.'%');
         }
 
         if (isset($filtros['ativo']) && is_bool($filtros['ativo'])) {

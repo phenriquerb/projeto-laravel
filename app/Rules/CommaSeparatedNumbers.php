@@ -40,7 +40,7 @@ class CommaSeparatedNumbers implements ValidationRule
         $parts = explode(',', $trimmed);
 
         foreach ($parts as $part) {
-            $part = trim($part);
+            $part = trim($part ?? '');
 
             // Cada parte não pode estar vazia (evita vírgulas consecutivas ou espaços)
             if (empty($part)) {

@@ -49,13 +49,11 @@ class ListarFuncionariosRequest extends FormRequest
     {
         $data = $this->validated();
 
-        if (isset($data['id']) && is_string($data['id'])) {
-            $ids = array_filter(
-                array_map('trim', explode(',', $data['id'])),
-                fn ($id) => ! empty($id) && is_numeric($id)
+        if (isset($data['id'])) {
+            $data['id'] = array_map(
+                'intval',
+                array_map('trim', explode(',', $data['id']))
             );
-
-            $data['id'] = ! empty($ids) ? array_map('intval', $ids) : null;
         }
 
         if (isset($data['ativo']) && is_string($data['ativo'])) {

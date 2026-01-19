@@ -20,6 +20,11 @@ jobs:
       - name: Install dependencies
         run: composer install --ignore-platform-reqs
 
+      - name: Prepare Laravel Application
+        run: |
+          cp .env.example .env
+          php artisan key:generate
+          
       - name: Check Code Style
         run: ./vendor/bin/pint --test
 
