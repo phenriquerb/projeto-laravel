@@ -28,4 +28,25 @@ class Funcionario extends Model
     {
         return $this->belongsTo(Cargo::class, 'cargo_id');
     }
+
+    /**
+     * Relacionamento: Um funcionário pode ser atendente de muitas OS
+     */
+    public function ordensServicoAtendente()
+    {
+        return $this->hasMany(OrdemServico::class, 'atendente_id');
+    }
+
+    /**
+     * Relacionamento: Um funcionário pode ser responsável por muitas OS (Many to Many)
+     */
+    public function ordensServicoResponsavel()
+    {
+        return $this->belongsToMany(
+            OrdemServico::class,
+            'os_responsaveis',
+            'funcionario_id',
+            'ordem_servico_id'
+        )->withTimestamps();
+    }
 }
