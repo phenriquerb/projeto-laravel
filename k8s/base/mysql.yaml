@@ -48,8 +48,6 @@ spec:
             secretKeyRef:
               name: app-secrets
               key: DB_DATABASE
-        - name: MYSQL_DATABASE
-          value: laravel_db
         ports:
         - containerPort: 3306
           name: mysql

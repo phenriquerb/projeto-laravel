@@ -17,7 +17,7 @@ secretGenerator:
       - password=PLACEHOLDER_DB_PASSWORD
   - name: app-secrets
     literals:
-      - APP_NAME="Laravel API Homolog"
+      - APP_NAME=Laravel-API-Homolog
       - APP_ENV=homolog
       - APP_DEBUG=true
       - DB_CONNECTION=mysql

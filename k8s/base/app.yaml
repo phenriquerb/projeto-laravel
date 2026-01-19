@@ -15,10 +15,12 @@ spec:
       initContainers:
         - name: install-code
           image: app-placeholder
-          command: ["sh", "-c", "cp -rf /var/www/html/. /destino/"] # Copia tudo da imagem para o volume vazio, garantindo que o Nginx veja os assets
+          # Apaga o que tiver lá (pra não misturar versões/caminhos antigos)
+          # Copia o novo conteúdo da imagem (/var/www/html) para o volume (/target)
+          command: ["sh", "-c", "rm -rf /target/* && cp -rf /var/www/html/. /target/"] # Copia tudo da imagem para o volume vazio, garantindo que o Nginx veja os assets
           volumeMounts:
             - name: app-code
-              mountPath: /destino
+              mountPath: /target
       containers:
         # --- CONTAINER 1: PHP-FPM ---
         - name: php-fpm
