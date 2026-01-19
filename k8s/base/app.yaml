@@ -15,9 +15,9 @@ spec:
       initContainers:
         - name: install-code
           image: app-placeholder
-          # Apaga o que tiver lá (pra não misturar versões/caminhos antigos)
           # Copia o novo conteúdo da imagem (/var/www/html) para o volume (/target)
-          command: ["sh", "-c", "rm -rf /target/* && cp -rf /var/www/html/. /target/"] # Copia tudo da imagem para o volume vazio, garantindo que o Nginx veja os assets
+          # Copia tudo da imagem para o volume vazio, garantindo que o Nginx veja os assets
+          command: ["sh", "-c", "cp -a /var/www/html/. /target/ && chown -R 33:33 /target"]
           volumeMounts:
             - name: app-code
               mountPath: /target

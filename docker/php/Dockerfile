@@ -37,6 +37,8 @@ WORKDIR /var/www/html
 
 COPY --from=build --chown=www-data:www-data /app /var/www/html
 
+RUN rm -f bootstrap/cache/*.php
+
 USER www-data
 
 EXPOSE 9000
