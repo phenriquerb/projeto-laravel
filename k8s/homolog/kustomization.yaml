@@ -1,4 +1,5 @@
 resources:
+  - namespace.yaml
   - ../base/mysql.yaml
   - ../base/app.yaml
   - ../base/nginx-config.yaml
@@ -27,3 +28,23 @@ secretGenerator:
       - DB_USERNAME=root
       - DB_PASSWORD=PLACEHOLDER_DB_PASSWORD
       - APP_KEY=PLACEHOLDER_APP_KEY
+
+patches:
+  - target:
+      version: v1
+      kind: Service
+      name: ingress-nginx-controller
+      namespace: ingress-nginx
+    patch: |-
+      - op: replace
+        path: /metadata/annotations/service.beta.kubernetes.io~1do-loadbalancer-enable-proxy-protocol
+        value: "false"
+  - target:
+      version: v1
+      kind: ConfigMap
+      name: ingress-nginx-controller
+      namespace: ingress-nginx
+    patch: |-
+      - op: replace
+        path: /data/use-proxy-protocol
+        value: "false"

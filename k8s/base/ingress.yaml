@@ -9,6 +9,7 @@ metadata:
     # Força o redirecionamento para HTTPS se você tiver SSL, 
     # mas por enquanto vamos garantir que o HTTP funcione
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
 spec:
   # O preenchimento deste campo fará o CLASS sair de <none> para nginx
   ingressClassName: nginx 
