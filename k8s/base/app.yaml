@@ -15,10 +15,17 @@ spec:
       initContainers:
         - name: install-code
           image: app-placeholder
-          # Copia o novo conteúdo da imagem (/var/www/html) para o volume (/target)
-          # Copia tudo da imagem para o volume vazio, garantindo que o Nginx veja os assets
-          # Usamos o comando 'rsync' ou um 'cp' mais simples sem preservar atributos
-          command: ["sh", "-c", "rm -rf /target/* && cp -R /var/www/html/* /target/"]
+          # 1. Limpa o volume
+          # 2. Copia os arquivos da imagem para o volume
+          # 3. Dá a posse das pastas para o usuário 33 (www-data)
+          command: 
+            - "sh"
+            - "-c"
+            - |
+              rm -rf /target/* && \
+              cp -rf /var/www/html/. /target/ && \
+              chown -R 33:33 /target/storage /target/bootstrap/cache && \
+              chmod -R 775 /target/storage /target/bootstrap/cache
           volumeMounts:
             - name: app-code
               mountPath: /target
