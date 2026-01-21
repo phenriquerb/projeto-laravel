@@ -93,7 +93,9 @@ class OrdemServicoService
             $this->ordemServicoRepository->atribuirTecnicos($ordemServico, $funcionariosIds);
 
             DB::afterCommit(function () use ($ordemServico, $funcionariosIds) {
-                event(new \App\Events\OsTecnicoAtribuido($ordemServico, $funcionariosIds));
+                event(new \App\Events\OsTecnicoAtribuido(
+                    $this->ordemServicoRepository->carregarRelacoes($ordemServico),
+                    $funcionariosIds));
             });
         });
     }
