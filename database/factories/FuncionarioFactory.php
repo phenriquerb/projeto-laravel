@@ -25,9 +25,14 @@ class FuncionarioFactory extends Factory
      */
     public function definition(): array
     {
+        $nome = $this->faker->name();
+        $login = strtolower(str_replace(' ', '.', $nome));
+
         return [
-            'nome' => $this->faker->name(),
+            'nome' => $nome,
             'email' => $this->faker->unique()->safeEmail(),
+            'login' => $login,
+            'password' => bcrypt('password'),
             'cargo_id' => function () {
                 return Cargo::factory()->create()->id;
             },

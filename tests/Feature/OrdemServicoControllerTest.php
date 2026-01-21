@@ -14,6 +14,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class OrdemServicoControllerTest extends TestCase
@@ -25,8 +26,16 @@ class OrdemServicoControllerTest extends TestCase
         parent::setUp();
 
         // Criar cargos padrão
-        Cargo::create(['nome' => 'Atendente']);
-        Cargo::create(['nome' => 'Tecnico']);
+        Cargo::create(['id' => CargoEnum::ATENDENTE->value, 'nome' => 'Atendente']);
+        Cargo::create(['id' => CargoEnum::TECNICO->value, 'nome' => 'Tecnico']);
+
+        // Autenticar um funcionário padrão
+        $funcionarioAuth = Funcionario::factory()->create([
+            'cargo_id' => CargoEnum::ATENDENTE->value,
+            'login' => 'test.auth',
+            'password' => bcrypt('password'),
+        ]);
+        Sanctum::actingAs($funcionarioAuth, ['*']);
     }
 
     public function test_deve_criar_os_com_sucesso(): void

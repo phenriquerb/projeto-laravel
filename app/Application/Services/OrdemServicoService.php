@@ -100,4 +100,20 @@ class OrdemServicoService
             });
         });
     }
+
+    /**
+     * Atualiza o laudo técnico de uma ordem de serviço
+     */
+    public function atualizarLaudo(OrdemServico $ordemServico, array $dados): void
+    {
+        DB::transaction(function () use ($ordemServico, $dados) {
+            $dados['status'] = 'execucao';
+
+            $this->ordemServicoRepository->atualizarLaudo($ordemServico, $dados);
+
+            DB::afterCommit(function () use ($dados) {
+                Pulse::record('os.valor_medio', (int) ($dados['valor_total'] * 100));
+            });
+        });
+    }
 }

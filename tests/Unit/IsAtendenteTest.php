@@ -22,6 +22,8 @@ class IsAtendenteTest extends TestCase
         $funcionario = Funcionario::create([
             'nome' => 'João Atendente',
             'email' => 'joao@example.com',
+            'login' => 'joao.atendente',
+            'password' => bcrypt('password'),
             'cargo_id' => $cargo->id,
         ]);
 
@@ -45,6 +47,8 @@ class IsAtendenteTest extends TestCase
         $funcionario = Funcionario::create([
             'nome' => 'Pedro Técnico',
             'email' => 'pedro@example.com',
+            'login' => 'pedro.tecnico',
+            'password' => bcrypt('password'),
             'cargo_id' => $cargoTecnico->id,
         ]);
 

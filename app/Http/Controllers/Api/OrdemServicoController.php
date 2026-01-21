@@ -6,6 +6,7 @@ use App\Application\Services\OrdemServicoService;
 use App\Domain\Exceptions\OrdemServicoException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AtribuirTecnicosRequest;
+use App\Http\Requests\AtualizarLaudoRequest;
 use App\Http\Requests\AtualizarStatusRequest;
 use App\Http\Requests\CriarOrdemServicoRequest;
 use App\Http\Requests\UploadEvidenciaRequest;
@@ -119,6 +120,27 @@ class OrdemServicoController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Erro ao atribuir técnicos: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Atualiza o laudo técnico de uma ordem de serviço
+     *
+     * @return JsonResponse
+     */
+    public function atualizarLaudo(OrdemServico $ordemServico, AtualizarLaudoRequest $request)
+    {
+        try {
+            $dados = $request->validated();
+            $this->ordemServicoService->atualizarLaudo($ordemServico, $dados);
+
+            return response()->json([
+                'message' => 'Laudo técnico atualizado com sucesso.',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao atualizar laudo: '.$e->getMessage(),
             ], 500);
         }
     }

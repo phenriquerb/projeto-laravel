@@ -15,6 +15,8 @@ return new class extends Migration
             $table->increments('id');
             $table->string('nome');
             $table->string('email');
+            $table->string('login')->unique();
+            $table->string('password');
             $table->unsignedInteger('cargo_id');
             $table->foreign('cargo_id')->references('id')->on('cargos');
             $table->timestamps();

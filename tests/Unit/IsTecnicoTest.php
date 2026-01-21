@@ -22,6 +22,8 @@ class IsTecnicoTest extends TestCase
         $funcionario = Funcionario::create([
             'nome' => 'Maria Técnica',
             'email' => 'maria@example.com',
+            'login' => 'maria.tecnica',
+            'password' => bcrypt('password'),
             'cargo_id' => $cargo->id,
         ]);
 
@@ -42,6 +44,8 @@ class IsTecnicoTest extends TestCase
         $funcionario = Funcionario::create([
             'nome' => 'João Atendente',
             'email' => 'joao@example.com',
+            'login' => 'joao.atendente',
+            'password' => bcrypt('password'),
             'cargo_id' => $cargoAtendente->id,
         ]);
 

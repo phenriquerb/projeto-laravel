@@ -35,4 +35,9 @@ interface OrdemServicoRepositoryInterface
      * Atribui técnicos responsáveis a uma ordem de serviço
      */
     public function atribuirTecnicos(OrdemServico $ordemServico, array $funcionariosIds): void;
+
+    /**
+     * Atualiza o laudo técnico de uma ordem de serviço
+     */
+    public function atualizarLaudo(OrdemServico $ordemServico, array $dados): void;
 }

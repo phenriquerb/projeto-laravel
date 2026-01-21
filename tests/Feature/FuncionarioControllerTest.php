@@ -2,28 +2,36 @@
 
 namespace Tests\Feature;
 
+use App\Enums\CargoEnum;
 use App\Models\Cargo;
 use App\Models\Funcionario;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class FuncionarioControllerTest extends TestCase
 {
-    use RefreshDatabase; // Roda as migrations no banco SQLite em memória
+    use RefreshDatabase;
 
     public function test_deve_retornar_lista_de_funcionarios_com_estrutura_correta(): void
     {
-        // Preparar: Criar cargos e funcionários usando as factories
-        $cargo = Cargo::factory()->create();
-        Funcionario::factory()->count(3)->create(['cargo_id' => $cargo->id]);
+        // Preparar cargos
+        Cargo::create(['id' => CargoEnum::ATENDENTE->value, 'nome' => 'Atendente']);
+        Cargo::create(['id' => CargoEnum::TECNICO->value, 'nome' => 'Tecnico']);
+
+        // Autenticar usuário
+        $usuario = Funcionario::factory()->create(['cargo_id' => CargoEnum::ATENDENTE->value]);
+        Sanctum::actingAs($usuario, ['*']);
+
+        // Preparar: Criar 3 funcionários usando a factory
+        Funcionario::factory()->count(3)->create(['cargo_id' => CargoEnum::TECNICO->value]);
 
         // Agir: Chamar a rota da API
         $response = $this->getJson('/api/funcionarios');
 
         // Verificar: Status 200 e se o Resource formatou o JSON corretamente
-        // O ResourceCollection do Laravel retorna com wrapper "data"
         $response->assertStatus(200)
-            ->assertJsonCount(3, 'data')
+            ->assertJsonCount(4, 'data') // 3 + 1 (usuario autenticado)
             ->assertJsonStructure([
                 'data' => [
                     '*' => [
@@ -41,8 +49,18 @@ class FuncionarioControllerTest extends TestCase
 
     public function test_deve_retornar_lista_vazia_quando_nao_houver_funcionarios(): void
     {
+        // Preparar cargos
+        Cargo::create(['id' => CargoEnum::ATENDENTE->value, 'nome' => 'Atendente']);
+
+        // Autenticar usuário
+        $usuario = Funcionario::factory()->create(['cargo_id' => CargoEnum::ATENDENTE->value]);
+        Sanctum::actingAs($usuario, ['*']);
+
+        // Deletar o usuário para retornar lista vazia
+        Funcionario::where('id', '!=', $usuario->id)->delete();
+        $usuario->delete();
+
         // Agir: Chamar a rota da API sem criar funcionários
-        // O RefreshDatabase já garante que o banco está limpo
         $response = $this->getJson('/api/funcionarios');
 
         // Verificar: Status 200 e array vazio dentro de "data"
@@ -53,11 +71,18 @@ class FuncionarioControllerTest extends TestCase
 
     public function test_deve_filtrar_funcionarios_por_id(): void
     {
-        // Preparar: Criar cargos e funcionários
-        $cargo = Cargo::factory()->create();
-        $funcionario1 = Funcionario::factory()->create(['cargo_id' => $cargo->id]);
-        $funcionario2 = Funcionario::factory()->create(['cargo_id' => $cargo->id]);
-        Funcionario::factory()->create(['cargo_id' => $cargo->id]);
+        // Preparar cargos
+        Cargo::create(['id' => CargoEnum::ATENDENTE->value, 'nome' => 'Atendente']);
+        Cargo::create(['id' => CargoEnum::TECNICO->value, 'nome' => 'Tecnico']);
+
+        // Autenticar usuário
+        $usuario = Funcionario::factory()->create(['cargo_id' => CargoEnum::ATENDENTE->value]);
+        Sanctum::actingAs($usuario, ['*']);
+
+        // Preparar: Criar 5 funcionários
+        $funcionario1 = Funcionario::factory()->create(['cargo_id' => CargoEnum::TECNICO->value]);
+        $funcionario2 = Funcionario::factory()->create(['cargo_id' => CargoEnum::TECNICO->value]);
+        Funcionario::factory()->count(3)->create(['cargo_id' => CargoEnum::TECNICO->value]);
 
         // Agir: Chamar a rota com filtro de ID
         $response = $this->getJson("/api/funcionarios?id={$funcionario1->id},{$funcionario2->id}");
@@ -71,25 +96,37 @@ class FuncionarioControllerTest extends TestCase
 
     public function test_deve_filtrar_funcionarios_por_nome(): void
     {
-        // Preparar: Criar cargos e funcionários
-        $cargo = Cargo::factory()->create();
+        // Preparar cargos
+        Cargo::create(['id' => CargoEnum::ATENDENTE->value, 'nome' => 'Atendente']);
+        Cargo::create(['id' => CargoEnum::TECNICO->value, 'nome' => 'Tecnico']);
+
+        // Autenticar usuário
+        $usuario = Funcionario::factory()->create(['cargo_id' => CargoEnum::ATENDENTE->value]);
+        Sanctum::actingAs($usuario, ['*']);
+
+        // Preparar: Criar funcionários com nomes específicos
         Funcionario::factory()->create([
             'nome' => 'João Silva',
-            'cargo_id' => $cargo->id,
+            'email' => 'joao@example.com',
+            'cargo_id' => CargoEnum::TECNICO->value,
         ]);
+
         Funcionario::factory()->create([
             'nome' => 'Maria Santos',
-            'cargo_id' => $cargo->id,
+            'email' => 'maria@example.com',
+            'cargo_id' => CargoEnum::TECNICO->value,
         ]);
+
         Funcionario::factory()->create([
             'nome' => 'Pedro Oliveira',
-            'cargo_id' => $cargo->id,
+            'email' => 'pedro@example.com',
+            'cargo_id' => CargoEnum::TECNICO->value,
         ]);
 
-        // Agir: Chamar a rota com filtro de nome
-        $response = $this->getJson('/api/funcionarios?nome=João');
+        // Agir: Filtrar por nome parcial "Silva"
+        $response = $this->getJson('/api/funcionarios?nome=Silva');
 
-        // Verificar: Deve retornar apenas o funcionário com nome "João Silva"
+        // Verificar: Deve retornar apenas "João Silva"
         $response->assertStatus(200)
             ->assertJsonCount(1, 'data')
             ->assertJsonFragment(['nome' => 'João Silva']);

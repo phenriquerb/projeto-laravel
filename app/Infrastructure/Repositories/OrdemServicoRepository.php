@@ -58,4 +58,12 @@ class OrdemServicoRepository implements OrdemServicoRepositoryInterface
     {
         $ordemServico->responsaveis()->sync($funcionariosIds);
     }
+
+    /**
+     * Atualiza o laudo técnico de uma ordem de serviço
+     */
+    public function atualizarLaudo(OrdemServico $ordemServico, array $dados): void
+    {
+        $ordemServico->update($dados);
+    }
 }
