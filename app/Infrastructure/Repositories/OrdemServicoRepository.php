@@ -25,6 +25,14 @@ class OrdemServicoRepository implements OrdemServicoRepositoryInterface
     }
 
     /**
+     * Carrega as relações de uma ordem de serviço
+     */
+    public function carregarRelacoes(OrdemServico $ordemServico): OrdemServico
+    {
+        return $ordemServico->load(['cliente', 'equipamento', 'atendente.cargo']);
+    }
+
+    /**
      * Busca a última OS com o prefixo especificado (com lock)
      */
     public function buscarUltimaPorPrefixo(string $prefixo): ?OrdemServico

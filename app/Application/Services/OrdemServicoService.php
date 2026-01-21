@@ -3,6 +3,7 @@
 namespace App\Application\Services;
 
 use App\Domain\Contracts\Repositories\OrdemServicoRepositoryInterface;
+use App\Domain\Contracts\Repositories\OsEvidenciaRepositoryInterface;
 use App\Jobs\EnviarEmailOrdemServicoAberta;
 use App\Models\OrdemServico;
 use App\Models\OsEvidencia;
@@ -13,7 +14,8 @@ use Laravel\Pulse\Facades\Pulse;
 class OrdemServicoService
 {
     public function __construct(
-        private OrdemServicoRepositoryInterface $ordemServicoRepository
+        private OrdemServicoRepositoryInterface $ordemServicoRepository,
+        private OsEvidenciaRepositoryInterface $osEvidenciaRepository
     ) {}
 
     /**
@@ -39,7 +41,7 @@ class OrdemServicoService
                 Pulse::record('os.aberta', $os->id, 1, now());
             });
 
-            return $this->ordemServicoRepository->buscarPorId($os->id);
+            return $this->ordemServicoRepository->carregarRelacoes($os);
         });
     }
 
@@ -55,7 +57,7 @@ class OrdemServicoService
         $nomeArquivo = $imagem->hashName();
         $caminhoCompleto = $imagem->storeAs($path, $nomeArquivo, 'public');
 
-        $evidencia = OsEvidencia::create([
+        $evidencia = $this->osEvidenciaRepository->criar([
             'ordem_servico_id' => $osId,
             'path' => $caminhoCompleto,
             'legenda' => $legenda,

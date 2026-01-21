@@ -17,6 +17,11 @@ interface OrdemServicoRepositoryInterface
     public function buscarPorId(int $id): ?OrdemServico;
 
     /**
+     * Carrega as relações de uma ordem de serviço
+     */
+    public function carregarRelacoes(OrdemServico $ordemServico): OrdemServico;
+
+    /**
      * Busca a última OS com o prefixo especificado (com lock)
      */
     public function buscarUltimaPorPrefixo(string $prefixo): ?OrdemServico;
