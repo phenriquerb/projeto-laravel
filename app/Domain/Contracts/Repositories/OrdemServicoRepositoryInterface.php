@@ -29,10 +29,10 @@ interface OrdemServicoRepositoryInterface
     /**
      * Atualiza o status de uma ordem de serviço
      */
-    public function atualizarStatus(int $id, string $status): OrdemServico;
+    public function atualizarStatus(OrdemServico $ordemServico, string $status): void;
 
     /**
      * Atribui técnicos responsáveis a uma ordem de serviço
      */
-    public function atribuirTecnicos(int $id, array $funcionariosIds): OrdemServico;
+    public function atribuirTecnicos(OrdemServico $ordemServico, array $funcionariosIds): void;
 }

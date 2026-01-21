@@ -70,15 +70,14 @@ class OrdemServicoService
     /**
      * Atualiza o status de uma ordem de serviço
      */
-    public function atualizarStatus(int $id, string $novoStatus): void
+    public function atualizarStatus(OrdemServico $ordemServico, string $novoStatus): void
     {
-        DB::transaction(function () use ($id, $novoStatus) {
-            $os = $this->ordemServicoRepository->atualizarStatus($id, $novoStatus);
+        DB::transaction(function () use ($ordemServico, $novoStatus) {
+            $this->ordemServicoRepository->atualizarStatus($ordemServico, $novoStatus);
 
-            // Registrar métrica no Pulse quando OS entra em análise
             if ($novoStatus === 'em_analise') {
-                DB::afterCommit(function () use ($os) {
-                    $tempoEspera = now()->diffInMinutes($os->created_at);
+                DB::afterCommit(function () use ($ordemServico) {
+                    $tempoEspera = now()->diffInMinutes($ordemServico->created_at);
                     Pulse::record('os.tempo_espera', $tempoEspera);
                 });
             }
@@ -88,14 +87,13 @@ class OrdemServicoService
     /**
      * Atribui técnicos responsáveis a uma ordem de serviço
      */
-    public function atribuirTecnicos(int $id, array $funcionariosIds): void
+    public function atribuirTecnicos(OrdemServico $ordemServico, array $funcionariosIds): void
     {
-        DB::transaction(function () use ($id, $funcionariosIds) {
-            $os = $this->ordemServicoRepository->atribuirTecnicos($id, $funcionariosIds);
+        DB::transaction(function () use ($ordemServico, $funcionariosIds) {
+            $this->ordemServicoRepository->atribuirTecnicos($ordemServico, $funcionariosIds);
 
-            // Disparar evento para WebSocket após o commit
-            DB::afterCommit(function () use ($os, $funcionariosIds) {
-                event(new \App\Events\OsTecnicoAtribuido($os, $funcionariosIds));
+            DB::afterCommit(function () use ($ordemServico, $funcionariosIds) {
+                event(new \App\Events\OsTecnicoAtribuido($ordemServico, $funcionariosIds));
             });
         });
     }

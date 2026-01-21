@@ -79,7 +79,7 @@ class OrdemServicoController extends Controller
     {
         try {
             $dados = $request->validated();
-            $this->ordemServicoService->atualizarStatus($ordemServico->id, $dados['status']);
+            $this->ordemServicoService->atualizarStatus($ordemServico, $dados['status']);
 
             return response()->json([
                 'message' => 'Status atualizado com sucesso.',
@@ -105,7 +105,7 @@ class OrdemServicoController extends Controller
         try {
             $dados = $request->validated();
             $this->ordemServicoService->atribuirTecnicos(
-                $ordemServico->id,
+                $ordemServico,
                 $dados['funcionarios_ids']
             );
 
