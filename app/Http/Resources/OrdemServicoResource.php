@@ -24,6 +24,7 @@ class OrdemServicoResource extends JsonResource
             'cliente' => new ClienteResource($this->whenLoaded('cliente')),
             'equipamento' => new EquipamentoResource($this->whenLoaded('equipamento')),
             'atendente' => new FuncionarioResource($this->whenLoaded('atendente')),
+            'responsaveis' => FuncionarioResource::collection($this->whenLoaded('responsaveis')),
             'relato_cliente' => $this->relato_cliente,
             'diagnostico_tecnico' => $this->diagnostico_tecnico,
             'valor_total' => $this->valor_total,

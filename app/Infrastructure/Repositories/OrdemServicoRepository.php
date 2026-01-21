@@ -34,4 +34,26 @@ class OrdemServicoRepository implements OrdemServicoRepositoryInterface
             ->lockForUpdate()
             ->first();
     }
+
+    /**
+     * Atualiza o status de uma ordem de serviço
+     */
+    public function atualizarStatus(int $id, string $status): OrdemServico
+    {
+        $os = $this->buscarPorId($id);
+        $os->update(['status' => $status]);
+
+        return $os->fresh();
+    }
+
+    /**
+     * Atribui técnicos responsáveis a uma ordem de serviço
+     */
+    public function atribuirTecnicos(int $id, array $funcionariosIds): OrdemServico
+    {
+        $os = $this->buscarPorId($id);
+        $os->responsaveis()->sync($funcionariosIds);
+
+        return $os->load('responsaveis.cargo');
+    }
 }

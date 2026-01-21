@@ -9,6 +9,7 @@ use App\Models\Cliente;
 use App\Models\Equipamento;
 use App\Models\Funcionario;
 use App\Models\OrdemServico;
+use App\Models\OsEvidencia;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
@@ -309,5 +310,186 @@ class OrdemServicoControllerTest extends TestCase
         // Verificar
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['imagem']);
+    }
+
+    public function test_deve_atualizar_status_para_em_analise_com_evidencia(): void
+    {
+        // Preparar dados
+        $cliente = Cliente::factory()->create();
+        $equipamento = Equipamento::factory()->create(['cliente_id' => $cliente->id]);
+        $atendente = Funcionario::factory()->create(['cargo_id' => CargoEnum::ATENDENTE->value]);
+
+        $os = OrdemServico::factory()->create([
+            'cliente_id' => $cliente->id,
+            'equipamento_id' => $equipamento->id,
+            'atendente_id' => $atendente->id,
+            'status' => 'aberta',
+        ]);
+
+        // Adicionar evidência de entrada
+        OsEvidencia::create([
+            'ordem_servico_id' => $os->id,
+            'path' => 'evidencias/2026/01/teste.jpg',
+            'momento' => 'entrada',
+        ]);
+
+        // Agir
+        $response = $this->patchJson("/api/os/{$os->id}/status", [
+            'status' => 'em_analise',
+        ]);
+
+        // Verificar
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Status atualizado com sucesso.',
+            ]);
+
+        $this->assertDatabaseHas('ordens_servico', [
+            'id' => $os->id,
+            'status' => 'em_analise',
+        ]);
+    }
+
+    public function test_nao_deve_atualizar_status_sem_evidencia_entrada(): void
+    {
+        // Preparar dados
+        $cliente = Cliente::factory()->create();
+        $equipamento = Equipamento::factory()->create(['cliente_id' => $cliente->id]);
+        $atendente = Funcionario::factory()->create(['cargo_id' => CargoEnum::ATENDENTE->value]);
+
+        $os = OrdemServico::factory()->create([
+            'cliente_id' => $cliente->id,
+            'equipamento_id' => $equipamento->id,
+            'atendente_id' => $atendente->id,
+            'status' => 'aberta',
+        ]);
+
+        // Não adicionar evidência
+
+        // Agir
+        $response = $this->patchJson("/api/os/{$os->id}/status", [
+            'status' => 'em_analise',
+        ]);
+
+        // Verificar
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['status']);
+    }
+
+    public function test_deve_atribuir_tecnicos_validos(): void
+    {
+        // Preparar dados
+        $cliente = Cliente::factory()->create();
+        $equipamento = Equipamento::factory()->create(['cliente_id' => $cliente->id]);
+        $atendente = Funcionario::factory()->create(['cargo_id' => CargoEnum::ATENDENTE->value]);
+        $tecnico1 = Funcionario::factory()->create(['cargo_id' => CargoEnum::TECNICO->value]);
+        $tecnico2 = Funcionario::factory()->create(['cargo_id' => CargoEnum::TECNICO->value]);
+
+        $os = OrdemServico::factory()->create([
+            'cliente_id' => $cliente->id,
+            'equipamento_id' => $equipamento->id,
+            'atendente_id' => $atendente->id,
+        ]);
+
+        // Agir
+        $response = $this->postJson("/api/os/{$os->id}/atribuir", [
+            'funcionarios_ids' => [$tecnico1->id, $tecnico2->id],
+        ]);
+
+        // Verificar
+        $response->assertStatus(200)
+            ->assertJson([
+                'message' => 'Técnicos atribuídos com sucesso.',
+            ]);
+
+        $this->assertDatabaseHas('os_responsaveis', [
+            'ordem_servico_id' => $os->id,
+            'funcionario_id' => $tecnico1->id,
+        ]);
+
+        $this->assertDatabaseHas('os_responsaveis', [
+            'ordem_servico_id' => $os->id,
+            'funcionario_id' => $tecnico2->id,
+        ]);
+    }
+
+    public function test_nao_deve_atribuir_mais_de_3_tecnicos(): void
+    {
+        // Preparar dados
+        $cliente = Cliente::factory()->create();
+        $equipamento = Equipamento::factory()->create(['cliente_id' => $cliente->id]);
+        $atendente = Funcionario::factory()->create(['cargo_id' => CargoEnum::ATENDENTE->value]);
+        $tecnicos = Funcionario::factory()->count(4)->create(['cargo_id' => CargoEnum::TECNICO->value]);
+
+        $os = OrdemServico::factory()->create([
+            'cliente_id' => $cliente->id,
+            'equipamento_id' => $equipamento->id,
+            'atendente_id' => $atendente->id,
+        ]);
+
+        // Agir
+        $response = $this->postJson("/api/os/{$os->id}/atribuir", [
+            'funcionarios_ids' => $tecnicos->pluck('id')->toArray(),
+        ]);
+
+        // Verificar
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['funcionarios_ids']);
+    }
+
+    public function test_nao_deve_atribuir_funcionario_nao_tecnico(): void
+    {
+        // Preparar dados
+        $cliente = Cliente::factory()->create();
+        $equipamento = Equipamento::factory()->create(['cliente_id' => $cliente->id]);
+        $atendente = Funcionario::factory()->create(['cargo_id' => CargoEnum::ATENDENTE->value]);
+
+        $os = OrdemServico::factory()->create([
+            'cliente_id' => $cliente->id,
+            'equipamento_id' => $equipamento->id,
+            'atendente_id' => $atendente->id,
+        ]);
+
+        // Agir - tentar atribuir atendente como técnico
+        $response = $this->postJson("/api/os/{$os->id}/atribuir", [
+            'funcionarios_ids' => [$atendente->id],
+        ]);
+
+        // Verificar
+        $response->assertStatus(422)
+            ->assertJsonValidationErrors(['funcionarios_ids.0']);
+    }
+
+    public function test_deve_enviar_notificacao_websocket_ao_atribuir(): void
+    {
+        \Illuminate\Support\Facades\Event::fake([\App\Events\OsTecnicoAtribuido::class]);
+
+        // Preparar dados
+        $cliente = Cliente::factory()->create();
+        $equipamento = Equipamento::factory()->create(['cliente_id' => $cliente->id]);
+        $atendente = Funcionario::factory()->create(['cargo_id' => CargoEnum::ATENDENTE->value]);
+        $tecnico1 = Funcionario::factory()->create(['cargo_id' => CargoEnum::TECNICO->value]);
+        $tecnico2 = Funcionario::factory()->create(['cargo_id' => CargoEnum::TECNICO->value]);
+
+        $os = OrdemServico::factory()->create([
+            'cliente_id' => $cliente->id,
+            'equipamento_id' => $equipamento->id,
+            'atendente_id' => $atendente->id,
+        ]);
+
+        // Agir
+        $response = $this->postJson("/api/os/{$os->id}/atribuir", [
+            'funcionarios_ids' => [$tecnico1->id, $tecnico2->id],
+        ]);
+
+        // Verificar
+        $response->assertStatus(200);
+
+        // Verificar que o evento foi disparado
+        \Illuminate\Support\Facades\Event::assertDispatched(\App\Events\OsTecnicoAtribuido::class, function ($event) use ($os, $tecnico1, $tecnico2) {
+            return $event->ordemServico->id === $os->id
+                && in_array($tecnico1->id, $event->funcionariosIds)
+                && in_array($tecnico2->id, $event->funcionariosIds);
+        });
     }
 }
