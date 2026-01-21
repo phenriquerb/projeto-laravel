@@ -5,7 +5,6 @@ namespace App\Events;
 use App\Models\OrdemServico;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -31,7 +30,7 @@ class OsTecnicoAtribuido implements ShouldBroadcast
     {
         // Criar canal privado para cada técnico
         return array_map(
-            fn ($id) => new PrivateChannel("tecnico.{$id}"),
+            fn ($id) => new Channel("tecnico.{$id}"),
             $this->funcionariosIds
         );
     }

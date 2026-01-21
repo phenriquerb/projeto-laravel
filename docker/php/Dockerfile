@@ -7,7 +7,7 @@ FROM php:8.4-fpm AS dev
 
 RUN apt-get update && apt-get install -y \
     libzip-dev libpng-dev libicu-dev unzip git \
-    && docker-php-ext-install pdo_mysql zip intl bcmath \
+    && docker-php-ext-install pdo_mysql zip intl bcmath pcntl\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 
@@ -25,7 +25,7 @@ FROM php:8.4-fpm AS prod
 
 RUN apt-get update && apt-get install -y \
     libzip-dev libpng-dev libicu-dev unzip libfcgi-bin \
-    && docker-php-ext-install pdo_mysql zip intl bcmath opcache \
+    && docker-php-ext-install pdo_mysql zip intl bcmath opcache pcntl\
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY docker/php/healthcheck.sh /usr/local/bin/php-fpm-healthcheck

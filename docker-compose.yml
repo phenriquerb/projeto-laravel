@@ -8,6 +8,8 @@ services:
     container_name: php-fpm
     # Alinhamento de permissões para evitar o erro 500 de escrita
     user: "${UID:-1000}:${GID:-1000}"
+    ports:
+      - "8090:8090" # <-- port para o Reverb
     volumes:
       - .:/var/www
     networks:
@@ -63,6 +65,41 @@ services:
       - php-fpm
     # Sobrescreve o CMD do Dockerfile para rodar o monitor do Pulse
     command: php artisan pulse:check
+
+# --- QUEUE WORKER (Processa os eventos em segundo plano) ---
+  queue-worker:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      target: dev
+    container_name: queue-worker
+    user: "${UID:-1000}:${GID:-1000}"
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel-net
+    depends_on:
+      - mysql
+      - php-fpm
+    command: php artisan queue:work --verbose --tries=3 --timeout=90
+
+  # --- REVERB SERVER (O servidor de WebSockets) ---
+  reverb:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+      target: dev
+    container_name: reverb
+    user: "${UID:-1000}:${GID:-1000}"
+    ports:
+      - "8090:8090"
+    volumes:
+      - .:/var/www
+    networks:
+      - laravel-net
+    depends_on:
+      - php-fpm
+    command: php artisan reverb:start --host=0.0.0.0 --port=8090 --debug
 
 networks:
   laravel-net:
