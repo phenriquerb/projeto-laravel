@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\StatusOrdemServicoEnum;
 use App\Models\Cliente;
 use App\Models\Equipamento;
 use App\Models\Funcionario;
@@ -43,7 +44,7 @@ class OrdemServicoFactory extends Factory
             'atendente_id' => Funcionario::factory(),
             'relato_cliente' => $this->faker->paragraph(),
             'diagnostico_tecnico' => $this->faker->optional()->paragraph(),
-            'status' => $this->faker->randomElement(['aberta', 'em_analise', 'aguardando_pecas', 'execucao', 'concluida', 'cancelada']),
+            'status' => $this->faker->randomElement(StatusOrdemServicoEnum::values()),
             'prioridade' => $this->faker->randomElement(['baixa', 'media', 'alta', 'critica']),
             'valor_total' => $this->faker->randomFloat(2, 50, 5000),
             'data_conclusao' => $this->faker->optional()->dateTime(),

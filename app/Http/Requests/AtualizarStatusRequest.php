@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\StatusOrdemServicoEnum;
 use App\Rules\OsPossuiEvidenciaEntrada;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
@@ -23,10 +24,15 @@ class AtualizarStatusRequest extends FormRequest
      */
     public function rules(): array
     {
+        // Remove o status 'aberta' dos valores aceitos (não pode ser atualizado para aberta)
+        $statusPermitidos = collect(StatusOrdemServicoEnum::values())
+            ->reject(fn ($status) => $status === StatusOrdemServicoEnum::ABERTA->value)
+            ->implode(',');
+
         return [
             'status' => [
                 'required',
-                'in:em_analise,aguardando_pecas,execucao,concluida,cancelada',
+                "in:{$statusPermitidos}",
             ],
         ];
     }
@@ -37,7 +43,7 @@ class AtualizarStatusRequest extends FormRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function ($validator) {
-            if ($this->status === 'em_analise') {
+            if ($this->status === StatusOrdemServicoEnum::EM_ANALISE->value) {
                 $ordemServico = $this->route('ordemServico');
 
                 // Se o Model Binding não resolveu, não validar (404 será retornado)

@@ -4,6 +4,7 @@ namespace App\Application\Services;
 
 use App\Domain\Contracts\Repositories\OrdemServicoRepositoryInterface;
 use App\Domain\Contracts\Repositories\OsEvidenciaRepositoryInterface;
+use App\Enums\StatusOrdemServicoEnum;
 use App\Jobs\EnviarEmailOrdemServicoAberta;
 use App\Models\OrdemServico;
 use App\Models\OsEvidencia;
@@ -30,7 +31,7 @@ class OrdemServicoService
                 'atendente_id' => $dados['atendente_id'],
                 'relato_cliente' => $dados['relato_cliente'],
                 'prioridade' => $dados['prioridade'],
-                'status' => 'aberta',
+                'status' => StatusOrdemServicoEnum::ABERTA->value,
             ];
 
             $os = $this->ordemServicoRepository->criar($dadosOs);
@@ -75,7 +76,7 @@ class OrdemServicoService
         DB::transaction(function () use ($ordemServico, $novoStatus) {
             $this->ordemServicoRepository->atualizarStatus($ordemServico, $novoStatus);
 
-            if ($novoStatus === 'em_analise') {
+            if ($novoStatus === StatusOrdemServicoEnum::EM_ANALISE->value) {
                 DB::afterCommit(function () use ($ordemServico) {
                     $tempoEspera = now()->diffInMinutes($ordemServico->created_at);
                     Pulse::record('os.tempo_espera', $tempoEspera);
