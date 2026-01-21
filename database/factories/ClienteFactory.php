@@ -18,11 +18,6 @@ class ClienteFactory extends Factory
     protected $model = Cliente::class;
 
     /**
-     * Sequenciador estático para IDs
-     */
-    private static int $idCounter = 1;
-
-    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -30,7 +25,6 @@ class ClienteFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => self::$idCounter++,
             'nome' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'cpf_cnpj' => $this->faker->unique()->numerify('###########'), // 11 dígitos para CPF

@@ -12,12 +12,9 @@ class OsResponsavel extends Model
 
     protected $table = 'os_responsaveis';
 
-    public $incrementing = false;
-
     protected $keyType = 'int';
 
     protected $fillable = [
-        'id',
         'ordem_servico_id',
         'funcionario_id',
     ];

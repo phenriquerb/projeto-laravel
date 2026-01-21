@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\CargoEnum;
 use App\Models\Cargo;
 use Illuminate\Database\Seeder;
 
@@ -12,9 +13,10 @@ class CargoSeeder extends Seeder
      */
     public function run(): void
     {
+        // IDs fixos para garantir relacionamentos previsíveis
         $cargos = [
-            ['id' => 1, 'nome' => 'Atendente'],
-            ['id' => 2, 'nome' => 'Tecnico'],
+            ['id' => CargoEnum::ATENDENTE->value, 'nome' => 'Atendente'],
+            ['id' => CargoEnum::TECNICO->value, 'nome' => 'Tecnico'],
         ];
 
         foreach ($cargos as $cargo) {

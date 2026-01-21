@@ -12,10 +12,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('os_responsaveis', function (Blueprint $table) {
-            $table->integer('id')->primary();
-            $table->integer('ordem_servico_id');
+            $table->increments('id');
+            $table->unsignedInteger('ordem_servico_id');
             $table->foreign('ordem_servico_id')->references('id')->on('ordens_servico')->onDelete('cascade');
-            $table->integer('funcionario_id');
+            $table->unsignedInteger('funcionario_id');
             $table->foreign('funcionario_id')->references('id')->on('funcionarios');
             $table->timestamps();
         });

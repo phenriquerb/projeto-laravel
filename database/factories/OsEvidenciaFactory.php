@@ -19,11 +19,6 @@ class OsEvidenciaFactory extends Factory
     protected $model = OsEvidencia::class;
 
     /**
-     * Sequenciador estático para IDs
-     */
-    private static int $idCounter = 1;
-
-    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -31,7 +26,6 @@ class OsEvidenciaFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => self::$idCounter++,
             'ordem_servico_id' => OrdemServico::factory(),
             'path' => 'evidencias/'.$this->faker->uuid().'.jpg',
             'legenda' => $this->faker->optional()->sentence(),

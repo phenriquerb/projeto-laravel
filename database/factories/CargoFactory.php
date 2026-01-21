@@ -18,11 +18,6 @@ class CargoFactory extends Factory
     protected $model = Cargo::class;
 
     /**
-     * Sequenciador estático para IDs
-     */
-    private static int $idCounter = 1;
-
-    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -30,7 +25,6 @@ class CargoFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => self::$idCounter++,
             'nome' => $this->faker->jobTitle(),
         ];
     }

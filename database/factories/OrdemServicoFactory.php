@@ -21,11 +21,6 @@ class OrdemServicoFactory extends Factory
     protected $model = OrdemServico::class;
 
     /**
-     * Sequenciador estático para IDs
-     */
-    private static int $idCounter = 1;
-
-    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -38,7 +33,6 @@ class OrdemServicoFactory extends Factory
         $protocolo = "{$ano}{$mes}-{$numero}";
 
         return [
-            'id' => self::$idCounter++,
             'protocolo' => $protocolo,
             'cliente_id' => Cliente::factory(),
             'equipamento_id' => function (array $attributes) {

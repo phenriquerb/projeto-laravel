@@ -12,15 +12,11 @@ class Funcionario extends Model
 
     protected $table = 'funcionarios';
 
-    public $incrementing = false;
-
     protected $keyType = 'int';
 
     protected $fillable = [
-        'id',
         'nome',
         'email',
-        'ativo',
         'cargo_id',
     ];
 

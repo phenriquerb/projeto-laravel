@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Funcionario;
+use App\Models\Cliente;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FuncionarioResource extends JsonResource
+class ClienteResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,12 +15,13 @@ class FuncionarioResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        /** @var Funcionario $this */
+        /** @var Cliente $this */
         return [
             'id' => $this->id,
             'nome' => $this->nome,
             'email' => $this->email,
-            'cargo' => $this->whenLoaded('cargo', fn () => new CargoResource($this->cargo)),
+            'cpf_cnpj' => $this->cpf_cnpj,
+            'whatsapp' => $this->whatsapp,
         ];
     }
 }

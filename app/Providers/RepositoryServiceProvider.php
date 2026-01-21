@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Domain\Contracts\Repositories\FuncionarioRepositoryInterface;
+use App\Domain\Contracts\Repositories\OrdemServicoRepositoryInterface;
 use App\Infrastructure\Repositories\FuncionarioRepository;
+use App\Infrastructure\Repositories\OrdemServicoRepository;
 use Illuminate\Support\ServiceProvider;
 
 class RepositoryServiceProvider extends ServiceProvider
@@ -16,6 +18,11 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(
             FuncionarioRepositoryInterface::class,
             FuncionarioRepository::class
+        );
+
+        $this->app->bind(
+            OrdemServicoRepositoryInterface::class,
+            OrdemServicoRepository::class
         );
     }
 

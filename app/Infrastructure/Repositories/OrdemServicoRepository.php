@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Infrastructure\Repositories;
+
+use App\Domain\Contracts\Repositories\OrdemServicoRepositoryInterface;
+use App\Models\OrdemServico;
+
+class OrdemServicoRepository implements OrdemServicoRepositoryInterface
+{
+    /**
+     * Cria uma nova ordem de serviço
+     */
+    public function criar(array $dados): OrdemServico
+    {
+        return OrdemServico::create($dados);
+    }
+
+    /**
+     * Busca uma ordem de serviço por ID com relacionamentos
+     */
+    public function buscarPorId(int $id): ?OrdemServico
+    {
+        return OrdemServico::with(['cliente', 'equipamento', 'atendente.cargo'])
+            ->find($id);
+    }
+
+    /**
+     * Busca a última OS com o prefixo especificado (com lock)
+     */
+    public function buscarUltimaPorPrefixo(string $prefixo): ?OrdemServico
+    {
+        return OrdemServico::where('protocolo', 'like', "{$prefixo}-%")
+            ->orderBy('protocolo', 'desc')
+            ->lockForUpdate()
+            ->first();
+    }
+}

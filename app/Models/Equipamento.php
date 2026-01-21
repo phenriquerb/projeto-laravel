@@ -11,12 +11,9 @@ class Equipamento extends Model
 {
     use HasFactory;
 
-    public $incrementing = false;
-
     protected $keyType = 'int';
 
     protected $fillable = [
-        'id',
         'cliente_id',
         'tipo',
         'marca',

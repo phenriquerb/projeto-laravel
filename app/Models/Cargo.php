@@ -12,12 +12,9 @@ class Cargo extends Model
 
     protected $table = 'cargos';
 
-    public $incrementing = false;
-
     protected $keyType = 'int';
 
     protected $fillable = [
-        'id',
         'nome',
     ];
 }

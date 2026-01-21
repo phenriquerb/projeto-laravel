@@ -10,12 +10,9 @@ class OsEvidencia extends Model
 {
     use HasFactory;
 
-    public $incrementing = false;
-
     protected $keyType = 'int';
 
     protected $fillable = [
-        'id',
         'ordem_servico_id',
         'path',
         'legenda',

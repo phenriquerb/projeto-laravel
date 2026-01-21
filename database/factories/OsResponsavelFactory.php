@@ -20,11 +20,6 @@ class OsResponsavelFactory extends Factory
     protected $model = OsResponsavel::class;
 
     /**
-     * Sequenciador estático para IDs
-     */
-    private static int $idCounter = 1;
-
-    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -32,7 +27,6 @@ class OsResponsavelFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => self::$idCounter++,
             'ordem_servico_id' => OrdemServico::factory(),
             'funcionario_id' => Funcionario::factory(),
         ];

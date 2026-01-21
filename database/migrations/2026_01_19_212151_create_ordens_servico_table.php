@@ -12,13 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('ordens_servico', function (Blueprint $table) {
-            $table->integer('id')->primary();
-            $table->string('protocolo')->unique(); // Ex: 202601-001
-            $table->integer('cliente_id');
+            $table->increments('id');
+            $table->string('protocolo')->unique(); // Ex: 202601-001 (unique já cria índice)
+            $table->unsignedInteger('cliente_id');
             $table->foreign('cliente_id')->references('id')->on('clientes');
-            $table->integer('equipamento_id');
+            $table->unsignedInteger('equipamento_id');
             $table->foreign('equipamento_id')->references('id')->on('equipamentos');
-            $table->integer('atendente_id');
+            $table->unsignedInteger('atendente_id');
             $table->foreign('atendente_id')->references('id')->on('funcionarios');
 
             $table->text('relato_cliente'); // O que o cliente disse

@@ -11,12 +11,9 @@ class Cliente extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public $incrementing = false;
-
     protected $keyType = 'int';
 
     protected $fillable = [
-        'id',
         'nome',
         'email',
         'cpf_cnpj',

@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('os_evidencias', function (Blueprint $table) {
-            $table->integer('id')->primary();
-            $table->integer('ordem_servico_id');
+            $table->increments('id');
+            $table->unsignedInteger('ordem_servico_id');
             $table->foreign('ordem_servico_id')->references('id')->on('ordens_servico')->onDelete('cascade');
             $table->string('path'); // Caminho no Storage (DigitalOcean Spaces / S3)
             $table->string('legenda')->nullable();

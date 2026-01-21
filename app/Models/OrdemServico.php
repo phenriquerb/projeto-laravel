@@ -13,12 +13,11 @@ class OrdemServico extends Model
 {
     use HasFactory, SoftDeletes;
 
-    public $incrementing = false;
+    protected $table = 'ordens_servico';
 
     protected $keyType = 'int';
 
     protected $fillable = [
-        'id',
         'protocolo',
         'cliente_id',
         'equipamento_id',

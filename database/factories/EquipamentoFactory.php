@@ -19,11 +19,6 @@ class EquipamentoFactory extends Factory
     protected $model = Equipamento::class;
 
     /**
-     * Sequenciador estático para IDs
-     */
-    private static int $idCounter = 1;
-
-    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -34,7 +29,6 @@ class EquipamentoFactory extends Factory
         $marcas = ['Dell', 'HP', 'Lenovo', 'Samsung', 'Apple', 'Acer', 'Asus'];
 
         return [
-            'id' => self::$idCounter++,
             'cliente_id' => Cliente::factory(),
             'tipo' => $this->faker->randomElement($tipos),
             'marca' => $this->faker->randomElement($marcas),

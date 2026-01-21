@@ -30,7 +30,6 @@ class FuncionarioControllerTest extends TestCase
                         'id',
                         'nome',
                         'email',
-                        'ativo',
                         'cargo' => [
                             'id',
                             'nome',
@@ -94,31 +93,5 @@ class FuncionarioControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonCount(1, 'data')
             ->assertJsonFragment(['nome' => 'João Silva']);
-    }
-
-    public function test_deve_filtrar_funcionarios_por_ativo(): void
-    {
-        // Preparar: Criar cargos e funcionários
-        $cargo = Cargo::factory()->create();
-        Funcionario::factory()->create([
-            'ativo' => true,
-            'cargo_id' => $cargo->id,
-        ]);
-        Funcionario::factory()->create([
-            'ativo' => false,
-            'cargo_id' => $cargo->id,
-        ]);
-        Funcionario::factory()->create([
-            'ativo' => true,
-            'cargo_id' => $cargo->id,
-        ]);
-
-        // Agir: Chamar a rota com filtro de ativo
-        $response = $this->getJson('/api/funcionarios?ativo=1');
-
-        // Verificar: Deve retornar apenas os funcionários ativos
-        $response->assertStatus(200)
-            ->assertJsonCount(2, 'data')
-            ->assertJsonMissing(['ativo' => false]);
     }
 }

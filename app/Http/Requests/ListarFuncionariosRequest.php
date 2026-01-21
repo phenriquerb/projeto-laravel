@@ -25,7 +25,6 @@ class ListarFuncionariosRequest extends FormRequest
         return [
             'id' => ['nullable', new CommaSeparatedNumbers],
             'nome' => 'nullable|string|max:255',
-            'ativo' => 'nullable|string|in:0,1',
         ];
     }
 
@@ -37,8 +36,6 @@ class ListarFuncionariosRequest extends FormRequest
         return [
             'nome.string' => 'O campo nome deve ser uma string.',
             'nome.max' => 'O campo nome não pode ter mais de 255 caracteres.',
-            'ativo.string' => 'O campo ativo deve ser uma string.',
-            'ativo.in' => 'O campo ativo deve ser 0 ou 1.',
         ];
     }
 
@@ -54,10 +51,6 @@ class ListarFuncionariosRequest extends FormRequest
                 'intval',
                 array_map('trim', explode(',', $data['id']))
             );
-        }
-
-        if (isset($data['ativo']) && is_string($data['ativo'])) {
-            $data['ativo'] = (bool) (int) $data['ativo'];
         }
 
         return array_filter($data, fn ($value) => $value !== null);

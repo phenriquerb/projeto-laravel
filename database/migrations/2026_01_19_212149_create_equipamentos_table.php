@@ -12,8 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('equipamentos', function (Blueprint $table) {
-            $table->integer('id')->primary();
-            $table->integer('cliente_id');
+            $table->increments('id');
+            $table->unsignedInteger('cliente_id');
             $table->foreign('cliente_id')->references('id')->on('clientes');
             $table->string('tipo'); // ex: Notebook, Smartphone, Servidor
             $table->string('marca');

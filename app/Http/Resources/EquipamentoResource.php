@@ -2,11 +2,11 @@
 
 namespace App\Http\Resources;
 
-use App\Models\Funcionario;
+use App\Models\Equipamento;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FuncionarioResource extends JsonResource
+class EquipamentoResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,12 +15,13 @@ class FuncionarioResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        /** @var Funcionario $this */
+        /** @var Equipamento $this */
         return [
             'id' => $this->id,
-            'nome' => $this->nome,
-            'email' => $this->email,
-            'cargo' => $this->whenLoaded('cargo', fn () => new CargoResource($this->cargo)),
+            'tipo' => $this->tipo,
+            'marca' => $this->marca,
+            'modelo' => $this->modelo,
+            'numero_serie' => $this->numero_serie,
         ];
     }
 }

@@ -19,11 +19,6 @@ class FuncionarioFactory extends Factory
     protected $model = Funcionario::class;
 
     /**
-     * Sequenciador estático para IDs
-     */
-    private static int $idCounter = 1;
-
-    /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
@@ -31,10 +26,8 @@ class FuncionarioFactory extends Factory
     public function definition(): array
     {
         return [
-            'id' => self::$idCounter++,
             'nome' => $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
-            'ativo' => true,
             'cargo_id' => function () {
                 return Cargo::factory()->create()->id;
             },
