@@ -13,11 +13,8 @@ class CargoSeeder extends Seeder
     public function run(): void
     {
         $cargos = [
-            ['id' => 1, 'nome' => 'Desenvolvedor'],
-            ['id' => 2, 'nome' => 'Analista'],
-            ['id' => 3, 'nome' => 'Gerente'],
-            ['id' => 4, 'nome' => 'Designer'],
-            ['id' => 5, 'nome' => 'QA'],
+            ['id' => 1, 'nome' => 'Atendente'],
+            ['id' => 2, 'nome' => 'Tecnico'],
         ];
 
         foreach ($cargos as $cargo) {
