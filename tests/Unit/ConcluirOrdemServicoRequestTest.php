@@ -80,9 +80,12 @@ class ConcluirOrdemServicoRequestTest extends TestCase
         $request = new ConcluirOrdemServicoRequest;
         $request->setContainer(app());
         $request->setUserResolver(fn () => $this->tecnico);
-        $request->setRouteResolver(fn () => new class($this->os) {
+        $request->setRouteResolver(fn () => new class($this->os)
+        {
             public function __construct(private $os) {}
-            public function parameter($name, $default = null) {
+
+            public function parameter($name, $default = null)
+            {
                 return $name === 'ordemServico' ? $this->os : $default;
             }
         });
@@ -101,9 +104,12 @@ class ConcluirOrdemServicoRequestTest extends TestCase
         $request = new ConcluirOrdemServicoRequest;
         $request->setContainer(app());
         $request->setUserResolver(fn () => $this->tecnico);
-        $request->setRouteResolver(fn () => new class($this->os) {
+        $request->setRouteResolver(fn () => new class($this->os)
+        {
             public function __construct(private $os) {}
-            public function parameter($name, $default = null) {
+
+            public function parameter($name, $default = null)
+            {
                 return $name === 'ordemServico' ? $this->os : $default;
             }
         });
@@ -122,9 +128,12 @@ class ConcluirOrdemServicoRequestTest extends TestCase
         $request = new ConcluirOrdemServicoRequest;
         $request->setContainer(app());
         $request->setUserResolver(fn () => $this->tecnico);
-        $request->setRouteResolver(fn () => new class($this->os) {
+        $request->setRouteResolver(fn () => new class($this->os)
+        {
             public function __construct(private $os) {}
-            public function parameter($name, $default = null) {
+
+            public function parameter($name, $default = null)
+            {
                 return $name === 'ordemServico' ? $this->os : $default;
             }
         });
@@ -149,9 +158,12 @@ class ConcluirOrdemServicoRequestTest extends TestCase
         $request = new ConcluirOrdemServicoRequest;
         $request->setContainer(app());
         $request->setUserResolver(fn () => $outroTecnico);
-        $request->setRouteResolver(fn () => new class($this->os) {
+        $request->setRouteResolver(fn () => new class($this->os)
+        {
             public function __construct(private $os) {}
-            public function parameter($name, $default = null) {
+
+            public function parameter($name, $default = null)
+            {
                 return $name === 'ordemServico' ? $this->os : $default;
             }
         });
