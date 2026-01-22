@@ -2,7 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main, develop ]
+    branches: [main, develop]
 
 jobs:
   ci-process:
@@ -15,9 +15,9 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.4'
+          php-version: "8.4"
           extensions: mbstring, pdo_mysql, bcmath, sqlite3
-      
+
       - name: Install dependencies
         run: composer install --ignore-platform-reqs
 
@@ -26,7 +26,7 @@ jobs:
         run: |
           cp .env.example .env
           php artisan key:generate
-          
+
       - name: Check Code Style
         run: ./vendor/bin/pint --test
 
@@ -54,30 +54,30 @@ jobs:
           tags: |
             ${{ secrets.DOCKERHUB_USERNAME }}/app-laravel:latest
             ${{ secrets.DOCKERHUB_USERNAME }}/app-laravel:${{ github.sha }}
-      
-      # 5. Preparação dos Manifestos
-      - name: Update Kubernetes resources
-        run: |
-          cd k8s/homolog
-          kustomize edit set image app-placeholder=${{ secrets.DOCKERHUB_USERNAME }}/app-laravel:${{ github.sha }}
 
-          sed -i "s/PLACEHOLDER_DB_HOST/${{ secrets.DB_HOST }}/g" kustomization.yaml
-          sed -i "s/PLACEHOLDER_DB_PORT/${{ secrets.DB_PORT }}/g" kustomization.yaml
-          sed -i "s/PLACEHOLDER_DB_DATABASE/${{ secrets.DB_DATABASE }}/g" kustomization.yaml
-          sed -i "s/PLACEHOLDER_DB_USERNAME/${{ secrets.DB_USERNAME }}/g" kustomization.yaml
-          sed -i "s/PLACEHOLDER_DB_PASSWORD/${{ secrets.DB_PASSWORD }}/g" kustomization.yaml
-          sed -i "s/PLACEHOLDER_APP_KEY/${{ secrets.APP_KEY }}/g" kustomization.yaml
+      ## 5. Preparação dos Manifestos
+      #- name: Update Kubernetes resources
+      #  run: |
+      #    cd k8s/homolog
+      #    kustomize edit set image app-placeholder=${{ secrets.DOCKERHUB_USERNAME }}/app-laravel:${{ github.sha }}
 
-      # 6. Autenticação na DigitalOcean
-      - name: Install doctl
-        uses: digitalocean/action-doctl@v2
-        with:
-          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+      #    sed -i "s/PLACEHOLDER_DB_HOST/${{ secrets.DB_HOST }}/g" kustomization.yaml
+      #    sed -i "s/PLACEHOLDER_DB_PORT/${{ secrets.DB_PORT }}/g" kustomization.yaml
+      #    sed -i "s/PLACEHOLDER_DB_DATABASE/${{ secrets.DB_DATABASE }}/g" kustomization.yaml
+      #    sed -i "s/PLACEHOLDER_DB_USERNAME/${{ secrets.DB_USERNAME }}/g" kustomization.yaml
+      #    sed -i "s/PLACEHOLDER_DB_PASSWORD/${{ secrets.DB_PASSWORD }}/g" kustomization.yaml
+      #    sed -i "s/PLACEHOLDER_APP_KEY/${{ secrets.APP_KEY }}/g" kustomization.yaml
 
-      - name: Save DigitalOcean kubeconfig
-        run: doctl kubernetes cluster kubeconfig save ${{ secrets.DIGITALOCEAN_CLUSTER_NAME }}
+      ## 6. Autenticação na DigitalOcean
+      #- name: Install doctl
+      #  uses: digitalocean/action-doctl@v2
+      #  with:
+      #    token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
 
-      # 7. Deploy Real
-      - name: Deploy to Kubernetes
-        run: |
-          kustomize build k8s/homolog --load-restrictor LoadRestrictionsNone | kubectl apply -f -
+      #- name: Save DigitalOcean kubeconfig
+      #  run: doctl kubernetes cluster kubeconfig save ${{ secrets.DIGITALOCEAN_CLUSTER_NAME }}
+
+      ## 7. Deploy Real
+      #- name: Deploy to Kubernetes
+      #  run: |
+      #    kustomize build k8s/homolog --load-restrictor LoadRestrictionsNone | kubectl apply -f -
