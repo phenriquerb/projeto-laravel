@@ -229,6 +229,7 @@ class OrdemServicoControllerTest extends TestCase
             'cliente_id' => $cliente->id,
             'equipamento_id' => $equipamento->id,
             'atendente_id' => $atendente->id,
+            'status' => 'aberta',
         ]);
 
         // Criar imagem fake (sem usar GD - apenas arquivo binário)
@@ -278,6 +279,7 @@ class OrdemServicoControllerTest extends TestCase
             'cliente_id' => $cliente->id,
             'equipamento_id' => $equipamento->id,
             'atendente_id' => $atendente->id,
+            'status' => 'aberta',
         ]);
 
         // Criar imagem fake de 6MB (sem usar GD)
@@ -306,6 +308,7 @@ class OrdemServicoControllerTest extends TestCase
             'cliente_id' => $cliente->id,
             'equipamento_id' => $equipamento->id,
             'atendente_id' => $atendente->id,
+            'status' => 'aberta',
         ]);
 
         // Criar arquivo PDF fake
@@ -398,6 +401,7 @@ class OrdemServicoControllerTest extends TestCase
             'cliente_id' => $cliente->id,
             'equipamento_id' => $equipamento->id,
             'atendente_id' => $atendente->id,
+            'status' => 'aberta',
         ]);
 
         // Agir
@@ -434,6 +438,7 @@ class OrdemServicoControllerTest extends TestCase
             'cliente_id' => $cliente->id,
             'equipamento_id' => $equipamento->id,
             'atendente_id' => $atendente->id,
+            'status' => 'aberta',
         ]);
 
         // Agir
@@ -457,6 +462,7 @@ class OrdemServicoControllerTest extends TestCase
             'cliente_id' => $cliente->id,
             'equipamento_id' => $equipamento->id,
             'atendente_id' => $atendente->id,
+            'status' => 'aberta',
         ]);
 
         // Agir - tentar atribuir atendente como técnico
