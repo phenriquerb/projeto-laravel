@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Rules\IsTecnico;
 use App\Rules\MaximoTecnicosPorOS;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 class AtribuirTecnicosRequest extends FormRequest
 {
@@ -35,6 +36,28 @@ class AtribuirTecnicosRequest extends FormRequest
                 new IsTecnico(),
             ],
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function ($validator) {
+            $ordemServico = $this->route('ordemServico');
+
+            if (! $ordemServico) {
+                return;
+            }
+
+            // Validar imutabilidade
+            if (in_array($ordemServico->status, ['concluida', 'cancelada'])) {
+                $validator->errors()->add(
+                    'status',
+                    'Esta OS já foi concluída ou cancelada e não pode ter técnicos atribuídos.'
+                );
+            }
+        });
     }
 
     /**

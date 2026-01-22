@@ -41,6 +41,15 @@ class AtualizarLaudoRequest extends FormRequest
                 return;
             }
 
+            if (in_array($ordemServico->status, ['concluida', 'cancelada'])) {
+                $validator->errors()->add(
+                    'status',
+                    'Esta OS já foi concluída ou cancelada e não pode ser alterada.'
+                );
+
+                return;
+            }
+
             $funcionarioId = $this->user()->id;
 
             $rule = new TecnicoResponsavelPelaOS($funcionarioId, $ordemServico->id);

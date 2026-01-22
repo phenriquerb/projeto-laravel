@@ -40,4 +40,9 @@ interface OrdemServicoRepositoryInterface
      * Atualiza o laudo técnico de uma ordem de serviço
      */
     public function atualizarLaudo(OrdemServico $ordemServico, array $dados): void;
+
+    /**
+     * Marca uma ordem de serviço como concluída
+     */
+    public function concluir(OrdemServico $ordemServico): void;
 }

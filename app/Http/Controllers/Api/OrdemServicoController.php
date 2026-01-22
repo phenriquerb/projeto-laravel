@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Application\Services\OrdemServicoService;
+use App\Application\Services\OrdemServicoPdfService;
 use App\Domain\Exceptions\OrdemServicoException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AtribuirTecnicosRequest;
 use App\Http\Requests\AtualizarLaudoRequest;
 use App\Http\Requests\AtualizarStatusRequest;
+use App\Http\Requests\ConcluirOrdemServicoRequest;
 use App\Http\Requests\CriarOrdemServicoRequest;
 use App\Http\Requests\UploadEvidenciaRequest;
 use App\Http\Resources\OrdemServicoResource;
@@ -141,6 +143,45 @@ class OrdemServicoController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Erro ao atualizar laudo: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Conclui uma ordem de serviço
+     *
+     * Marca a OS como concluída, envia email ao cliente com PDF anexo,
+     * e registra métricas de receita no Pulse.
+     *
+     * @return JsonResponse
+     */
+    public function concluir(OrdemServico $ordemServico, ConcluirOrdemServicoRequest $request)
+    {
+        try {
+            $this->ordemServicoService->concluir($ordemServico);
+
+            return response()->json([
+                'message' => 'Ordem de serviço concluída com sucesso. Email enviado ao cliente.',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao concluir ordem de serviço: '.$e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /**
+     * Exporta o PDF de uma ordem de serviço
+     *
+     * @return \Illuminate\Http\Response|JsonResponse
+     */
+    public function exportarPdf(OrdemServico $ordemServico, OrdemServicoPdfService $pdfService)
+    {
+        try {
+            return $pdfService->streamPdf($ordemServico);
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Erro ao gerar PDF: '.$e->getMessage(),
             ], 500);
         }
     }

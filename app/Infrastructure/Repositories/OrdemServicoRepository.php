@@ -66,4 +66,15 @@ class OrdemServicoRepository implements OrdemServicoRepositoryInterface
     {
         $ordemServico->update($dados);
     }
+
+    /**
+     * Marca uma ordem de serviço como concluída
+     */
+    public function concluir(OrdemServico $ordemServico): void
+    {
+        $ordemServico->update([
+            'status' => 'concluida',
+            'data_conclusao' => now(),
+        ]);
+    }
 }

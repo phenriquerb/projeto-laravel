@@ -116,4 +116,30 @@ class OrdemServicoService
             });
         });
     }
+
+    /**
+     * Conclui uma ordem de serviço
+     */
+    public function concluir(OrdemServico $ordemServico): void
+    {
+        DB::transaction(function () use ($ordemServico) {
+            $this->ordemServicoRepository->concluir($ordemServico);
+
+            // Disparar job de email
+            \App\Jobs\EnviarEmailOrdemServicoConcluida::dispatch($ordemServico->id)
+                ->afterCommit();
+
+            // Registrar métricas no Pulse
+            DB::afterCommit(function () use ($ordemServico) {
+                // Receita gerada (em centavos)
+                Pulse::record(
+                    'os.receita_gerada',
+                    (int) ($ordemServico->valor_total * 100)
+                );
+
+                // Contador de OS concluídas
+                Pulse::record('os.concluida', $ordemServico->id, 1, now());
+            });
+        });
+    }
 }

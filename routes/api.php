@@ -24,6 +24,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/os/{ordemServico}/status', [OrdemServicoController::class, 'atualizarStatus']);
     Route::post('/os/{ordemServico}/atribuir', [OrdemServicoController::class, 'atribuirTecnicos']);
     Route::put('/os/{ordemServico}/laudo', [OrdemServicoController::class, 'atualizarLaudo']);
+    Route::patch('/os/{ordemServico}/concluir', [OrdemServicoController::class, 'concluir']);
+    Route::get('/os/{ordemServico}/exportar-pdf', [OrdemServicoController::class, 'exportarPdf']);
 });
 
 // Testes Pulse
