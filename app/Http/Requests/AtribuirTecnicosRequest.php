@@ -28,12 +28,12 @@ class AtribuirTecnicosRequest extends FormRequest
             'funcionarios_ids' => [
                 'required',
                 'array',
-                new MaximoTecnicosPorOS(),
+                new MaximoTecnicosPorOS,
             ],
             'funcionarios_ids.*' => [
                 'required',
                 'integer',
-                new IsTecnico(),
+                new IsTecnico,
             ],
         ];
     }

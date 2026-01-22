@@ -77,7 +77,7 @@ class ConcluirOrdemServicoRequestTest extends TestCase
     {
         $this->os->update(['diagnostico_tecnico' => 'Diagnóstico curto']);
 
-        $request = new ConcluirOrdemServicoRequest();
+        $request = new ConcluirOrdemServicoRequest;
         $request->setContainer(app());
         $request->setUserResolver(fn () => $this->tecnico);
         $request->setRouteResolver(fn () => \Illuminate\Support\Facades\Route::getCurrentRoute()->setParameter('ordemServico', $this->os));
@@ -93,7 +93,7 @@ class ConcluirOrdemServicoRequestTest extends TestCase
     {
         $this->os->update(['status' => 'concluida']);
 
-        $request = new ConcluirOrdemServicoRequest();
+        $request = new ConcluirOrdemServicoRequest;
         $request->setContainer(app());
         $request->setUserResolver(fn () => $this->tecnico);
         $request->setRouteResolver(fn () => \Illuminate\Support\Facades\Route::getCurrentRoute()->setParameter('ordemServico', $this->os));
@@ -109,7 +109,7 @@ class ConcluirOrdemServicoRequestTest extends TestCase
     {
         $this->os->update(['status' => 'cancelada']);
 
-        $request = new ConcluirOrdemServicoRequest();
+        $request = new ConcluirOrdemServicoRequest;
         $request->setContainer(app());
         $request->setUserResolver(fn () => $this->tecnico);
         $request->setRouteResolver(fn () => \Illuminate\Support\Facades\Route::getCurrentRoute()->setParameter('ordemServico', $this->os));
@@ -131,7 +131,7 @@ class ConcluirOrdemServicoRequestTest extends TestCase
             'cargo_id' => CargoEnum::TECNICO->value,
         ]);
 
-        $request = new ConcluirOrdemServicoRequest();
+        $request = new ConcluirOrdemServicoRequest;
         $request->setContainer(app());
         $request->setUserResolver(fn () => $outroTecnico);
         $request->setRouteResolver(fn () => \Illuminate\Support\Facades\Route::getCurrentRoute()->setParameter('ordemServico', $this->os));

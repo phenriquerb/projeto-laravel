@@ -117,7 +117,7 @@ docker compose logs php-fpm
 
 ### 📚 **Scramble - Documentação Interativa da API** ⭐
 
-**URL:** http://localhost:8080/api/documentation
+**URL:** http://localhost:8080/docs/api
 
 > **🎯 Esta é a ferramenta principal para testar a API!** O Scramble fornece uma interface interativa onde você pode:
 > - Ver todos os endpoints disponíveis
@@ -126,7 +126,7 @@ docker compose logs php-fpm
 > - Autenticar e fazer chamadas reais à API
 
 **Como usar:**
-1. Acesse http://localhost:8080/api/documentation
+1. Acesse http://localhost:8080/docs/api
 2. Faça login usando as credenciais abaixo
 3. Explore e teste todos os endpoints disponíveis
 
@@ -212,7 +212,7 @@ curl -X POST http://localhost:8080/api/login \
 ## 🧪 Testando a API
 
 ### 1. Via Scramble (Recomendado)
-1. Acesse http://localhost:8080/api/documentation
+1. Acesse http://localhost:8080/docs/api
 2. Clique em "Authorize" no topo
 3. Faça login com as credenciais acima
 4. Explore os endpoints e teste diretamente na interface

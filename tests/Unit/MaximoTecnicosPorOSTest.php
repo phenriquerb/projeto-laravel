@@ -10,7 +10,7 @@ class MaximoTecnicosPorOSTest extends TestCase
 {
     public function test_deve_aceitar_array_com_1_tecnico(): void
     {
-        $rule = new MaximoTecnicosPorOS();
+        $rule = new MaximoTecnicosPorOS;
         $validator = Validator::make(
             ['tecnicos' => [1]],
             ['tecnicos' => [$rule]]
@@ -21,7 +21,7 @@ class MaximoTecnicosPorOSTest extends TestCase
 
     public function test_deve_aceitar_array_com_3_tecnicos(): void
     {
-        $rule = new MaximoTecnicosPorOS();
+        $rule = new MaximoTecnicosPorOS;
         $validator = Validator::make(
             ['tecnicos' => [1, 2, 3]],
             ['tecnicos' => [$rule]]
@@ -32,7 +32,7 @@ class MaximoTecnicosPorOSTest extends TestCase
 
     public function test_deve_rejeitar_array_vazio(): void
     {
-        $rule = new MaximoTecnicosPorOS();
+        $rule = new MaximoTecnicosPorOS;
         $validator = Validator::make(
             ['tecnicos' => []],
             ['tecnicos' => [$rule]]
@@ -44,7 +44,7 @@ class MaximoTecnicosPorOSTest extends TestCase
 
     public function test_deve_rejeitar_array_com_mais_de_3_tecnicos(): void
     {
-        $rule = new MaximoTecnicosPorOS();
+        $rule = new MaximoTecnicosPorOS;
         $validator = Validator::make(
             ['tecnicos' => [1, 2, 3, 4]],
             ['tecnicos' => [$rule]]
@@ -56,7 +56,7 @@ class MaximoTecnicosPorOSTest extends TestCase
 
     public function test_deve_rejeitar_tecnicos_duplicados(): void
     {
-        $rule = new MaximoTecnicosPorOS();
+        $rule = new MaximoTecnicosPorOS;
         $validator = Validator::make(
             ['tecnicos' => [1, 2, 1]],
             ['tecnicos' => [$rule]]
@@ -68,7 +68,7 @@ class MaximoTecnicosPorOSTest extends TestCase
 
     public function test_deve_rejeitar_valor_nao_array(): void
     {
-        $rule = new MaximoTecnicosPorOS();
+        $rule = new MaximoTecnicosPorOS;
         $validator = Validator::make(
             ['tecnicos' => 'nao-array'],
             ['tecnicos' => [$rule]]

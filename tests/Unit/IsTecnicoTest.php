@@ -27,7 +27,7 @@ class IsTecnicoTest extends TestCase
             'cargo_id' => $cargo->id,
         ]);
 
-        $rule = new IsTecnico();
+        $rule = new IsTecnico;
         $validator = Validator::make(
             ['tecnico_id' => $funcionario->id],
             ['tecnico_id' => [$rule]]
@@ -49,7 +49,7 @@ class IsTecnicoTest extends TestCase
             'cargo_id' => $cargoAtendente->id,
         ]);
 
-        $rule = new IsTecnico();
+        $rule = new IsTecnico;
         $validator = Validator::make(
             ['tecnico_id' => $funcionario->id],
             ['tecnico_id' => [$rule]]
@@ -61,7 +61,7 @@ class IsTecnicoTest extends TestCase
 
     public function test_deve_rejeitar_funcionario_inexistente(): void
     {
-        $rule = new IsTecnico();
+        $rule = new IsTecnico;
         $validator = Validator::make(
             ['tecnico_id' => 999],
             ['tecnico_id' => [$rule]]
@@ -73,7 +73,7 @@ class IsTecnicoTest extends TestCase
 
     public function test_deve_rejeitar_valor_nao_numerico(): void
     {
-        $rule = new IsTecnico();
+        $rule = new IsTecnico;
         $validator = Validator::make(
             ['tecnico_id' => 'abc'],
             ['tecnico_id' => [$rule]]

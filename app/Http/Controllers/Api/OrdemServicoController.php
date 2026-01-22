@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Application\Services\OrdemServicoService;
 use App\Application\Services\OrdemServicoPdfService;
+use App\Application\Services\OrdemServicoService;
 use App\Domain\Exceptions\OrdemServicoException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AtribuirTecnicosRequest;
