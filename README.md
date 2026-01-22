@@ -34,7 +34,17 @@ O projeto utiliza **Multi-stage Build**, separando o ambiente em dois estágios:
 
 ## 🚀 Como Iniciar (Quick Start)
 
-### 1. Clonar o projeto e configurar o ambiente
+Este guia vai te ajudar a executar a API localmente em poucos minutos. O projeto está configurado para funcionar "out of the box" com Docker.
+
+### 📋 Pré-requisitos
+
+- Docker e Docker Compose instalados
+- Git instalado
+- Portas 8080, 8090 e 3306 disponíveis
+
+### 🔧 Passo a Passo
+
+#### 1. Clonar o projeto
 ```bash
 # HTTPS
 git clone https://github.com/phenriquerb/projeto-laravel.git
@@ -43,34 +53,269 @@ git clone https://github.com/phenriquerb/projeto-laravel.git
 git clone git@github.com:phenriquerb/projeto-laravel.git
 
 cd projeto-laravel
+```
+
+#### 2. Configurar variáveis de ambiente
+```bash
 cp .env.example .env
 ```
 
-### 2. Sincronizar Permissões (Usuários Linux/WSL2)
-Para evitar erros de Permission Denied nos logs e cache, exporte seu ID de usuário antes de subir os containers:
-```bash
-export UID=$(id -u)
-export GID=$(id -g)
-```
-### 3. Subir os containers
+#### 3. Subir os containers Docker
 ```bash
 docker compose up -d --build
 ```
-### 4. Instalar dependências e preparar o app
+
+Este comando vai:
+- Construir as imagens PHP, Nginx e MySQL
+- Iniciar todos os serviços (php-fpm, nginx, mysql, queue-worker, pulse-worker, reverb)
+- Aguarde alguns minutos na primeira execução
+
+#### 4. Instalar dependências do PHP
 ```bash
 docker compose exec php-fpm composer install
+```
+
+#### 5. Gerar chave de aplicação
+```bash
 docker compose exec php-fpm php artisan key:generate
+```
+
+#### 6. Executar migrations
+```bash
 docker compose exec php-fpm php artisan migrate
 ```
 
-## 🔍 Acessando a Aplicação
-API: http://localhost:8080
+#### 7. Popular o banco de dados com dados de teste
+```bash
+docker compose exec php-fpm php artisan db:seed
+```
 
-**Scramble (Documentação da API):** http://localhost:8080/api/documentation
+Este comando cria:
+- **Cargos**: Atendente e Técnico
+- **Funcionários**: 8 funcionários (4 atendentes e 4 técnicos)
+- **Clientes**: 4 clientes de exemplo
+- **Equipamentos**: 6 equipamentos associados aos clientes
 
-> **Nota:** O Scramble está configurado para acesso público, permitindo que visitantes do portfólio possam visualizar a documentação interativa da API.
+#### 8. Publicar assets do Telescope (Opcional - para debug)
+```bash
+docker compose exec php-fpm php artisan telescope:install
+docker compose exec php-fpm php artisan migrate
+```
 
-Telescope (Debug): http://localhost:8080/telescope
+#### 9. Verificar se tudo está funcionando
+```bash
+# Verificar status dos containers
+docker compose ps
+
+# Verificar logs (se necessário)
+docker compose logs php-fpm
+```
+
+---
+
+## 🌐 Acessando a Aplicação
+
+### 📚 **Scramble - Documentação Interativa da API** ⭐
+
+**URL:** http://localhost:8080/api/documentation
+
+> **🎯 Esta é a ferramenta principal para testar a API!** O Scramble fornece uma interface interativa onde você pode:
+> - Ver todos os endpoints disponíveis
+> - Testar requisições diretamente no navegador
+> - Ver exemplos de requisições e respostas
+> - Autenticar e fazer chamadas reais à API
+
+**Como usar:**
+1. Acesse http://localhost:8080/api/documentation
+2. Faça login usando as credenciais abaixo
+3. Explore e teste todos os endpoints disponíveis
+
+### 🔍 Telescope - Debug e Monitoramento
+
+**URL:** http://localhost:8080/telescope
+
+Ferramenta de debug do Laravel que permite visualizar:
+- Requisições HTTP
+- Queries SQL
+- Logs
+- Jobs em fila
+- Exceções
+- E muito mais
+
+**Acesso:** Público (configurado para portfólio)
+
+### 📊 Pulse - Monitoramento em Tempo Real
+
+**URL:** http://localhost:8080/pulse
+
+Dashboard de monitoramento que mostra:
+- Métricas de performance
+- Requisições lentas
+- Erros em tempo real
+- Receita gerada
+- OS concluídas no dia
+
+**Acesso:** Público (configurado para portfólio)
+
+### 🔌 API REST
+
+**Base URL:** http://localhost:8080/api
+
+---
+
+## 🔑 Credenciais de Teste
+
+Após executar o seeder, você pode usar as seguintes credenciais para testar a API:
+
+### Atendentes
+```
+Login: joao.silva
+Senha: password
+
+Login: ana.costa
+Senha: password
+
+Login: carlos.pereira
+Senha: password
+
+Login: fernanda.souza
+Senha: password
+```
+
+### Técnicos
+```
+Login: maria.santos
+Senha: password
+
+Login: pedro.oliveira
+Senha: password
+
+Login: juliana.alves
+Senha: password
+
+Login: roberto.lima
+Senha: password
+```
+
+### Exemplo de Login via API
+```bash
+curl -X POST http://localhost:8080/api/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "login": "joao.silva",
+    "password": "password"
+  }'
+```
+
+---
+
+## 🧪 Testando a API
+
+### 1. Via Scramble (Recomendado)
+1. Acesse http://localhost:8080/api/documentation
+2. Clique em "Authorize" no topo
+3. Faça login com as credenciais acima
+4. Explore os endpoints e teste diretamente na interface
+
+### 2. Via cURL/Postman
+Use o token retornado no login para autenticar requisições:
+```bash
+# Fazer login e obter token
+TOKEN=$(curl -s -X POST http://localhost:8080/api/login \
+  -H "Content-Type: application/json" \
+  -d '{"login":"joao.silva","password":"password"}' \
+  | jq -r '.token')
+
+# Usar o token em requisições
+curl -X GET http://localhost:8080/api/funcionarios \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+---
+
+## 🛠️ Comandos Úteis
+
+### Gerenciar containers
+```bash
+# Parar todos os containers
+docker compose down
+
+# Parar e remover volumes (limpar banco)
+docker compose down -v
+
+# Reiniciar containers
+docker compose restart
+
+# Ver logs
+docker compose logs -f php-fpm
+```
+
+### Comandos Artisan
+```bash
+# Executar qualquer comando artisan
+docker compose exec php-fpm php artisan [comando]
+
+# Exemplos:
+docker compose exec php-fpm php artisan route:list
+docker compose exec php-fpm php artisan tinker
+docker compose exec php-fpm php artisan migrate:fresh --seed
+```
+
+### Limpar cache
+```bash
+docker compose exec php-fpm php artisan cache:clear
+docker compose exec php-fpm php artisan config:clear
+docker compose exec php-fpm php artisan route:clear
+docker compose exec php-fpm php artisan view:clear
+```
+
+---
+
+## 📝 Dados de Teste Criados pelo Seeder
+
+Após executar `php artisan db:seed`, você terá:
+
+- **4 Clientes** (IDs: 1-4)
+- **6 Equipamentos** distribuídos entre os clientes
+- **8 Funcionários** (4 atendentes + 4 técnicos)
+- **2 Cargos** (Atendente e Técnico)
+
+Todos os dados têm IDs fixos para facilitar testes e relacionamentos previsíveis.
+
+---
+
+## ❓ Troubleshooting
+
+### Erro de permissão ao criar arquivos
+Se você encontrar erros de permissão ao criar arquivos no storage ou cache:
+```bash
+docker compose exec php-fpm chmod -R 775 storage bootstrap/cache
+docker compose exec php-fpm chown -R www-data:www-data storage bootstrap/cache
+```
+
+### Container não inicia
+```bash
+# Verificar logs
+docker compose logs php-fpm
+
+# Reconstruir containers
+docker compose down
+docker compose up -d --build
+```
+
+### Banco de dados não conecta
+Verifique se o MySQL está rodando:
+```bash
+docker compose ps mysql
+```
+
+Se não estiver, reinicie:
+```bash
+docker compose restart mysql
+```
+
+### Porta já em uso
+Se as portas 8080, 8090 ou 3306 estiverem em uso, você pode alterá-las no arquivo `docker-compose.yml`.
 
 ---
 
