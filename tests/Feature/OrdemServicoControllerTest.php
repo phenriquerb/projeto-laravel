@@ -484,6 +484,7 @@ class OrdemServicoControllerTest extends TestCase
             'cliente_id' => $cliente->id,
             'equipamento_id' => $equipamento->id,
             'atendente_id' => $atendente->id,
+            'status' => 'aberta',
         ]);
 
         // Autenticar usuário
