@@ -1,11 +1,13 @@
 <?php
 
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -29,6 +31,33 @@ return Application::configure(basePath: dirname(__DIR__))
                 default => 'Registro',
             };
         };
+
+        // Handler para RouteNotFoundException (quando middleware tenta redirecionar para rota inexistente)
+        $exceptions->render(function (RouteNotFoundException $e, $request) {
+            if (! $request->is('api/*')) {
+                return null;
+            }
+
+            // Se for uma tentativa de redirecionamento de autenticação, retornar 401
+            if (str_contains($e->getMessage(), 'login')) {
+                return response()->json([
+                    'message' => 'Não autenticado. Token de acesso requerido.',
+                ], 401);
+            }
+
+            return null;
+        });
+
+        // Handler para erros de autenticação (401)
+        $exceptions->render(function (AuthenticationException $e, $request) {
+            if (! $request->is('api/*')) {
+                return null;
+            }
+
+            return response()->json([
+                'message' => 'Não autenticado. Token de acesso requerido.',
+            ], 401);
+        });
 
         // Handler para erros de validação (422)
         $exceptions->render(function (ValidationException $e, $request) {

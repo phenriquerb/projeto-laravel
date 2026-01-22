@@ -486,6 +486,9 @@ class OrdemServicoControllerTest extends TestCase
             'atendente_id' => $atendente->id,
         ]);
 
+        // Autenticar usuário
+        Sanctum::actingAs($atendente, ['*']);
+
         // Agir
         $response = $this->postJson("/api/os/{$os->id}/atribuir", [
             'funcionarios_ids' => [$tecnico1->id, $tecnico2->id],

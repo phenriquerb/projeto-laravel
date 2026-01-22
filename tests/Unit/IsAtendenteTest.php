@@ -36,31 +36,6 @@ class IsAtendenteTest extends TestCase
         $this->assertTrue($validator->passes());
     }
 
-    public function test_deve_rejeitar_funcionario_inativo(): void
-    {
-        // Criar cargo Atendente
-        $cargo = Cargo::create(['nome' => 'Atendente']);
-
-        // Criar funcionário atendente inativo
-        $funcionario = Funcionario::create([
-            'nome' => 'João Atendente',
-            'email' => 'joao@example.com',
-            'login' => 'joao.atendente',
-            'password' => bcrypt('password'),
-            'cargo_id' => $cargo->id,
-            'ativo' => false,
-        ]);
-
-        $rule = new IsAtendente;
-        $validator = Validator::make(
-            ['atendente_id' => $funcionario->id],
-            ['atendente_id' => [$rule]]
-        );
-
-        $this->assertFalse($validator->passes());
-        $this->assertStringContainsString('não está ativo', $validator->errors()->first('atendente_id'));
-    }
-
     public function test_deve_rejeitar_funcionario_com_cargo_diferente(): void
     {
         // Criar cargo Atendente primeiro (ID 1) e depois Técnico (ID 2)

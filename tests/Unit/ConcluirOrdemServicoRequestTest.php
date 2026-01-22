@@ -80,7 +80,12 @@ class ConcluirOrdemServicoRequestTest extends TestCase
         $request = new ConcluirOrdemServicoRequest;
         $request->setContainer(app());
         $request->setUserResolver(fn () => $this->tecnico);
-        $request->setRouteResolver(fn () => \Illuminate\Support\Facades\Route::getCurrentRoute()->setParameter('ordemServico', $this->os));
+        $request->setRouteResolver(fn () => new class($this->os) {
+            public function __construct(private $os) {}
+            public function parameter($name, $default = null) {
+                return $name === 'ordemServico' ? $this->os : $default;
+            }
+        });
 
         $validator = Validator::make([], $request->rules());
         $request->withValidator($validator);
@@ -96,7 +101,12 @@ class ConcluirOrdemServicoRequestTest extends TestCase
         $request = new ConcluirOrdemServicoRequest;
         $request->setContainer(app());
         $request->setUserResolver(fn () => $this->tecnico);
-        $request->setRouteResolver(fn () => \Illuminate\Support\Facades\Route::getCurrentRoute()->setParameter('ordemServico', $this->os));
+        $request->setRouteResolver(fn () => new class($this->os) {
+            public function __construct(private $os) {}
+            public function parameter($name, $default = null) {
+                return $name === 'ordemServico' ? $this->os : $default;
+            }
+        });
 
         $validator = Validator::make([], $request->rules());
         $request->withValidator($validator);
@@ -112,7 +122,12 @@ class ConcluirOrdemServicoRequestTest extends TestCase
         $request = new ConcluirOrdemServicoRequest;
         $request->setContainer(app());
         $request->setUserResolver(fn () => $this->tecnico);
-        $request->setRouteResolver(fn () => \Illuminate\Support\Facades\Route::getCurrentRoute()->setParameter('ordemServico', $this->os));
+        $request->setRouteResolver(fn () => new class($this->os) {
+            public function __construct(private $os) {}
+            public function parameter($name, $default = null) {
+                return $name === 'ordemServico' ? $this->os : $default;
+            }
+        });
 
         $validator = Validator::make([], $request->rules());
         $request->withValidator($validator);
@@ -134,7 +149,12 @@ class ConcluirOrdemServicoRequestTest extends TestCase
         $request = new ConcluirOrdemServicoRequest;
         $request->setContainer(app());
         $request->setUserResolver(fn () => $outroTecnico);
-        $request->setRouteResolver(fn () => \Illuminate\Support\Facades\Route::getCurrentRoute()->setParameter('ordemServico', $this->os));
+        $request->setRouteResolver(fn () => new class($this->os) {
+            public function __construct(private $os) {}
+            public function parameter($name, $default = null) {
+                return $name === 'ordemServico' ? $this->os : $default;
+            }
+        });
 
         $validator = Validator::make([], $request->rules());
         $request->withValidator($validator);
